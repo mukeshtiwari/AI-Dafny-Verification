@@ -142,12 +142,7 @@ method p6_2_j_has_duplicates(arr: seq<int>) returns (hasDuplicates: bool)
 //except for the smallest one, in a single loop. In the loop, update the sum and the
 //smallest value. After the loop, return the difference.
 
-function sum_array(arr: seq<int>) : int
-  ensures forall i :: 0 <= i < |arr| ==> arr[i] >= 0 ==> sum_array(arr) >= 0
-{
-  if |arr| == 0 then 0
-  else arr[0] + sum_array(arr[1..])
-}
+
 
 function find_smallest(arr: seq<int>) : (ret : int)
   requires |arr| >= 1
@@ -157,11 +152,17 @@ function find_smallest(arr: seq<int>) : (ret : int)
   else 
     assert 2 <= |arr|;
     var rest_smallest := find_smallest(arr[1..]);
-    var ret : int := if arr[0] <= rest_smallest then arr[0] else rest_smallest; 
+    var ret : int := if arr[0] <= rest_smallest then arr[0] else rest_smallest;
+    assert arr == [arr[0]] + arr[1..]; 
     assert ret == if arr[0] <= rest_smallest then arr[0] else rest_smallest;
     ret 
 }
 
+function sum_array(arr: seq<int>) : int
+{
+  if |arr| == 0 then 0
+  else  arr[0] + sum_array(arr[1..])
+}
 
 method p6_4_sum_without_smallest(arr: seq<int>) returns (sum: int)
   requires |arr| >= 1

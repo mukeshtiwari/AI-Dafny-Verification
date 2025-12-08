@@ -83,26 +83,28 @@ method p6_2_f_move_even_to_front(arr: seq<int>) returns (result: seq<int>)
 }
 
 
-/*
-function find_largest(arr: seq<int>) : int
+
+function find_largest(arr: seq<int>) : (ret : int)
   requires |arr| >= 1
-  ensures forall x :: x in arr ==> x <= find_largest(arr) 
+  ensures forall x :: x in arr ==> x <= ret
 {
   if |arr| == 1 then arr[0]
   else 
     assert 2 <= |arr|;
     var rest_largest := find_largest(arr[1..]);
-    assert 1 <= |rest_largest|; 
-    if arr[0] >= rest_largest then arr[0] else rest_largest
-}
+    var ret : int := if arr[0] >= rest_largest then arr[0] else rest_largest;
+    assert arr == [arr[0]] + arr[1..]; 
+    ret 
+} 
 
 
 method p6_2_g_second_largest(arr: seq<int>) returns (second_largest: int)
   requires |arr| >= 2
-  ensures exists x :: x in arr && x < second_largest 
+  ensures second_largest < find_largest(arr)
+  ensures forall x :: x in arr ==> x < find_largest(arr) ==> x <= second_largest
 {  
 }
-*/
+
 
 method p6_2_h_is_sorted(arr: seq<int>) returns (isSorted: bool)
   ensures isSorted == (forall i :: 0 <= i < |arr| - 1 ==> arr[i] <= arr[i + 1])
@@ -141,8 +143,6 @@ method p6_2_j_has_duplicates(arr: seq<int>) returns (hasDuplicates: bool)
 //p6.4 Write a method sumWithoutSmallest that computes the sum of an array of values,
 //except for the smallest one, in a single loop. In the loop, update the sum and the
 //smallest value. After the loop, return the difference.
-
-
 
 function find_smallest(arr: seq<int>) : (ret : int)
   requires |arr| >= 1

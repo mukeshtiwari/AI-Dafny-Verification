@@ -112,10 +112,136 @@ ensures (forall c :: c in str ==> !(c == 'a' || c == 'e' || c == 'i' || c == 'o'
 // that returns a count of all words in the string str. Words are separated by spaces. For
 // example, countWords("Mary had a little lamb") should return 5.
 
-// Todo: not a very good spec so improve it. 
+function count_space(str: seq<char>) : int
+{
+  if |str| == 0 then 0
+  else if str[0] == ' ' then 1 + count_space(str[1..])
+  else count_space(str[1..])
+}
+
+
 method p5_7_countWords(str: seq<char>) returns (wordCount: int)
 ensures wordCount >= 0
 ensures if |str| == 0 then wordCount == 0 else wordCount >= 1
+ensures wordCount == count_space(str) + 1
 {
+}
+
+// It is a well-known phenomenon that most people are easily able to read a text whose
+//words have two characters flipped, provided the first and last letter of each word are
+//not changed. For example,
+//I dn’ot gvie a dman for a man taht can olny sepll a wrod one way. (Mrak Taiwn)
+//Write a method String scramble(String word) that constructs a scrambled version of a
+//given word, ran domly flipping two characters other than the first and last one. Then
+//write a program that reads words and prints the scrambled words
+
+
+// write a permutation function becase they are permuting of each other
+method p5_8_scramble(word: seq<string>) returns (scrambled: seq<string>)
+requires 1 <= |word| && forall w :: w in word ==> 1 <= |w|
+ensures |scrambled| == |word|
+ensures forall i :: 0 <= i < |word| ==> |scrambled[i]| == |word[i]|
+ensures forall i :: 0 <= i < |word| ==> word[i][0] == scrambled[i][0] && word[i][|word[i]| - 1] == scrambled[i][|scrambled[i]| - 1]
+{  
+}
+
+//p5.9 Write methods
+//public static double sphereVolume(double r)
+//public static double sphereSurface(double r)
+//public static double cylinderVolume(double r, double h)
+//public static double cylinderSurface(double r, double h)
+//public static double coneVolume(double r, double h)
+//public static double coneSurface(double r, double h)
+//that compute the volume and surface area of a sphere with radius r, a cylinder with a
+//circular base with radius r and height h, and a cone with a circular base with radius r
+//and height h. Then write a program that prompts the user for the values of r and h,
+//calls the six methods, and prints the results
+
+method p5_9_sphereVolume(r: real) returns (volume: real)
+ensures volume == (4.0 / 3.0) * 3.14159 * r * r * r
+{  
+}
+
+method p5_9_sphereSurface(r: real) returns (surface_area: real)
+ensures surface_area == 4.0 * 3.14159 * r * r
+{  
+}
+
+method p5_9_cylinderVolume(r: real, h: real) returns (volume: real)
+ensures volume == 3.14159 * r * r * h
+{  
+}
+
+method p5_9_cylinderSurface(r: real, h: real) returns (surface_area: real)
+ensures surface_area == 2.0 * 3.14159 * r * (r + h)
+{  
+}
+
+method p5_9_coneVolume(r: real, h: real) returns (volume: real)
+ensures volume == (1.0 / 3.0) * 3.14159 * r * r * h
+{  
+}
+
+// can you give surface area without sqrt? 
+// taken https://github.com/dafny-lang/teaching-material/blob/066004f07fcd2e7bc13e75b0ecf448cca3c8c674/Exercises/IncreasingSQRT_solution.dfy#L4
+// In this exercise, we will prove some properties of the square root function. First, we posit its existence.
+ghost function Sqrt(x: real): real
+
+// The square root function is characterized by two properties that we axiomatize. First, the square root function is positive.
+lemma SqrtPos()
+  ensures forall x: real :: x >= 0.0 ==> Sqrt(x) >= 0.0
+
+// Second, for a given real x, the product of the square root of x with itself is x. That's the essence of the square root function.
+lemma SqrtProp()
+  ensures forall x: real :: x >= 0.0 ==> Sqrt(x) * Sqrt(x) == x
+
+// Exercise
+// Our goal is to prove that the square root function is monotonic. First, we will do so as a sequent. Maybe you do not remember how to prove this property, and that's fine. Think about it on paper first, and when you think you might have an argument, see if Dafny accepts it. Hint: assume that the square root function was not monotonic, and show that it is inconsistent.
+lemma MonotonicPre(x: real, y: real)
+  requires 0.0 <= x < y
+  ensures Sqrt(x) < Sqrt(y)
+{
+  assert x < y;
+  assert Sqrt(x) * Sqrt(x) < Sqrt(y) * Sqrt(y) by {
+    SqrtProp();
+  }
+  assert Sqrt(x) >= 0.0 && Sqrt(y) >= 0.0 by {
+    SqrtPos();
+  }
+  if Sqrt(x) >= Sqrt(y) {
+    assert Sqrt(x) * Sqrt(x) >= Sqrt(y) * Sqrt(y);
+    assert false;
+  }
+}
+
+// Exercise
+// Using that lemma we just proved, prove the non-sequent version of the theorem.
+lemma Monotonic()
+  ensures forall x, y: real :: 0.0 <= x < y ==> Sqrt(x) < Sqrt(y)
+{
+  forall x, y: real ensures 0.0 <= x < y ==> Sqrt(x) < Sqrt(y) {
+    if 0.0 <= x < y {
+      MonotonicPre(x,y);
+    }
+  }
+}
+
+
+method p5_9_coneSurface(r: real, h: real) returns (surface_area: real)
+ensures surface_area == 3.14159 * r * (r + Sqrt(h * h + r * r))
+{  
+} 
+
+
+//p5.10 Write a method
+//public static double readDouble(String prompt)
+//that displays the prompt string, followed by a space, reads a floating-point number
+//in, and returns it. Here is a typical usage:
+//salary = readDouble("Please enter your salary:");
+//percentageRaise = readDouble("What percentage raise would you like?");
+
+// Not a very spec friendly method
+method p5_10_readDouble(prompt: seq<char>) returns (value: real)
+{  
 }
 

@@ -1,3 +1,5 @@
+// Book page 25.
+
 // greeting of your choice
 method p_1_1() returns (s : string)
 ensures s == "hugo"
@@ -69,8 +71,12 @@ ensures s == "   +    \n  + +   \n +   + \n+-----+\n"
     return "   +    \n  + +   \n +   + \n+-----+\n";
 }
 
+// Todo: to be finished
 method p_1_10() returns (s : string)
 ensures s =  " /\_/\    -----\n" + "" 
+{
+    
+}
 
 
 method Main() {

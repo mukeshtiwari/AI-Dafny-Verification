@@ -234,7 +234,7 @@ ensures forall i :: 0 <= i < |s| ==> reversed[i] == s[|s| - 1 - i]
 // 4. 10 Write a program that reads a word and prints the number of vowels in the word.
 method p4_10_count_vowels(s: string) returns (count: int)
 ensures 0 <= count
-ensures forall c :: c in s && c in ['a','e','i','o','u','A','E','I','O','U'] ==> count >= 1
+ensures forall c :: c in s ==> c in ['a','e','i','o','u','A','E','I','O','U'] ==> count >= 1
 ensures (forall c :: c in s ==> c !in ['a','e','i','o','u','A','E','I','O','U']) ==> count == 0
 {  
 }

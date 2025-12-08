@@ -133,7 +133,108 @@ method p6_2_j_has_duplicates(arr: seq<int>) returns (hasDuplicates: bool)
 }
 
 
+//p6.3 Modify the LargestInArray.java program in Section 6.3 to mark both the smallest and
+//the largest elements.
+// Todo 
 
 
+//p6.4 Write a method sumWithoutSmallest that computes the sum of an array of values,
+//except for the smallest one, in a single loop. In the loop, update the sum and the
+//smallest value. After the loop, return the difference.
+
+function sum_array(arr: seq<int>) : int
+  ensures forall i :: 0 <= i < |arr| ==> arr[i] >= 0 ==> sum_array(arr) >= 0
+{
+  if |arr| == 0 then 0
+  else arr[0] + sum_array(arr[1..])
+}
+
+function find_smallest(arr: seq<int>) : (ret : int)
+  requires |arr| >= 1
+  ensures forall x :: x in arr ==> ret <= x 
+{
+  if |arr| == 1 then arr[0]
+  else 
+    assert 2 <= |arr|;
+    var rest_smallest := find_smallest(arr[1..]);
+    var ret : int := if arr[0] <= rest_smallest then arr[0] else rest_smallest; 
+    assert ret == if arr[0] <= rest_smallest then arr[0] else rest_smallest;
+    ret 
+}
+
+
+method p6_4_sum_without_smallest(arr: seq<int>) returns (sum: int)
+  requires |arr| >= 1
+  ensures sum == sum_array(arr) - find_smallest(arr)
+{  
+}
+
+
+//p6.5 Write a method public static void removeMin that removes the minimum value from a
+//partially filled array without calling other methods.
+// Todo 
+
+//p6.6 Compute the alternating sum of all elements in an array. For example, if your pro-
+//gram reads the input
+//1 4 9 16 9 7 4 9 11
+//then it computes
+//1 – 4 + 9 – 16 + 9 – 7 + 4 – 9 + 11 = –2
+
+function sum_arrray(arr : seq<int>, i : int) : int
+{
+  if |arr| == 0 then 0
+  else arr[0] * i + sum_arrray(arr[1..], i * -1)
+}
+
+method p6_6_alternating_sum(arr: seq<int>) returns (alt_sum: int)
+ ensures alt_sum == sum_arrray(arr, 1)
+{
+}
+
+
+// P6.7 Write a method that reverses the sequence of elements in an array. For example, if
+//you call the method with the array
+//1 4 9 16 9 7 4 9 11
+//then the array is changed to
+//11 9 4 7 9 16 9 4 1
+
+method p6_7_reverse_array(arr: seq<int>) returns (reversed: seq<int>)
+  ensures |reversed| == |arr|
+  ensures forall i :: 0 <= i < |reversed| ==> reversed[i] == arr[|arr| - 1 - i]
+{  
+}
+
+// p6.8 Write a method that implements the algorithm developed in Section 6.6.
+// Todo
+
+//p6.9 Write a method
+//public static boolean equals(int[] a, int[] b)
+// that checks whether two arrays have the same elements in the same order.
+
+method p6_9_arrays_equal(arr1: seq<int>, arr2: seq<int>) returns (areEqual: bool)
+  ensures areEqual == (|arr1| == |arr2| && forall i :: 0 <= i < |arr1| ==> arr1[i] == arr2[i])
+{  
+}
+
+// p6.10Write a method
+//public static boolean sameSet(int[] a, int[] b)
+//that checks whether two arrays have the same elements in some order, ignoring
+//duplicates. For example, the two arrays
+//1 4 9 16 9 7 4 9 11
+//and
+//11 11 7 9 16 4 1
+//would be considered identical. You will probably need one or more helper methods.
+
+function array_to_set(arr: seq<int>) : set<int>
+{
+  if |arr| == 0 then {}
+  else {arr[0]} + array_to_set(arr[1..])
+}
+
+// https://dafny.org/latest/OnlineTutorial/Sets
+method p6_10_same_set(arr1: seq<int>, arr2: seq<int>) returns (areSameSet: bool)
+  ensures areSameSet == (array_to_set(arr1) == array_to_set(arr2))
+{  
+}
 
 

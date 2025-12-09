@@ -159,6 +159,7 @@ method p_13_9_sum_of_array(arr: seq<int>) returns (sum: int)
 
 // this assumes that polygon points are given in order either clockwise or counterclockwise
 function polygon_area(points: seq<(real, real)>) : real
+  decreases |points|
   requires |points| >= 3
   ensures polygon_area(points) >= 0.0
 {

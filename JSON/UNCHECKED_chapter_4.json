@@ -56,14 +56,15 @@
       "dafny": {
         "method_signature": "a >= 0",
         "requires": [],
-        "ensures": [sum == s_o_d(n)],
-        "functional_code": "function s_o_d(a: int): int
-requires a >= 0
+        "ensures": [sum == sum_odd_digits(n)],
+        "functional_code": "function sum_odd_digits(n: int): int
+decreases n
 {
-  if a == 0 then 0
-  else if a % 10 == 1 then a % 10 + s_o_d(a / 10)
-  else s_o_d(a / 10)
-}"
+  if n % 10 < 10 then 
+    if n % 10 % 2 == 1 then n % 10 else 0
+  else if n % 10 % 2 == 1 then n % 10 + sum_odd_digits(n / 10)
+  else sum_odd_digits(n / 10)
+  }"
       }
     },
     {

@@ -46,11 +46,19 @@ ensures sum == sum_odd(a, b)  // closed formula for addition of odd numbers betw
 }
 
 
+function sum_odd_digits(n: seq<int>): int
+decreases |n|
+{
+  if |n| == 0 then 0
+  else if n[0] % 2 == 1 then n[0] + sum_odd_digits(n[1..])
+  else sum_odd_digits(n[1..])
+}
 
 method p4_1_e_sum_odd_digits(n: seq<int>) returns (sum: int)
 ensures sum >= 0
 ensures forall d :: d in n && d % 2 == 1 ==> sum >= d  // if there are odd digits, sum is at least as large as the largest odd digit
 ensures (forall d :: d in n ==> d % 2 == 0) ==> sum == 0 // if there are no odd digits, sum is 0
+ensures sum == sum_odd_digits(n)
 {  
 }
 

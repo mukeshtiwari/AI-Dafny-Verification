@@ -63,6 +63,7 @@ method p5_3_firstDigit(n: int) returns (first: int)
 requires 0 <= n 
 ensures 0 <= first < 10
 ensures intToSeq(n)[0] == first // This could be strengthned 
+ensures forall d :: d in intToSeq(n) ==> 0 <= d < 10
 {
 }
 
@@ -80,6 +81,13 @@ ensures if |str| % 2 == 1 then middleStr[0] == str[|str| / 2] else middleStr == 
 {
 } 
 
+method p5_4_middle_array(str: array<char>) returns (middleStr: array<char>)
+requires 0 < str.Length
+ensures if str.Length % 2 == 1 then middleStr.Length == 1 else middleStr.Length == 2
+ensures if str.Length % 2 == 1 then middleStr[0] == str[str.Length / 2] else middleStr[..] == str[str.Length / 2 - 1 .. str.Length / 2 + 1]
+{
+} 
+
 // p5.5 Write a method
 //public static String repeat(String str, int n)
 //that returns the string str repeated n times. For example, repeat("ho", 3) returns
@@ -89,6 +97,13 @@ method p5_5_repeat(str: seq<char>, n: int) returns (repeatedStr: seq<char>)
 requires n >= 0
 ensures |repeatedStr| == n * |str|
 ensures forall i :: 0 <= i < n ==> repeatedStr[i * |str| .. (i + 1) * |str|] == str
+{
+}
+
+method p5_5_repeat_array(str: array<char>, n: int) returns (repeatedStr: array<char>)
+requires n >= 0
+ensures repeatedStr.Length == n * str.Length
+ensures forall i :: 0 <= i < n ==> repeatedStr[i * str.Length .. (i + 1) * str.Length] == str[..]
 {
 }
 
@@ -103,6 +118,14 @@ ensures vowelCount >= 0
 ensures vowelCount <= |str|
 ensures (forall c :: c in str ==> (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == |str|
 ensures (forall c :: c in str ==> !(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == 0
+{
+}
+
+method p5_6_countVowels_array(str: array<char>) returns (vowelCount: int)
+ensures vowelCount >= 0
+ensures vowelCount <= str.Length
+ensures (forall c :: c in str[..] ==> (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == str.Length
+ensures (forall c :: c in str[..] ==> !(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == 0
 {
 }
 
@@ -126,6 +149,37 @@ ensures if |str| == 0 then wordCount == 0 else wordCount >= 1
 ensures wordCount == count_space(str) + 1
 {
 }
+
+// this is probably a better spec
+// it checks if i is the start of a word or not. 
+function is_word_start(str: seq<char>, i: int): bool
+{
+  0 <= i < |str| &&
+  str[i] != ' ' &&
+  (i == 0 || str[i - 1] == ' ')
+}
+
+// This one builds a set of all the indices that are the start of a word and checks that the word count is the size of that set.
+// For example, for "Mary had a little lamb", the set of indices are {0, 5, 9, 11, 18} (hopefully, my counting is correct) and the word count is 5.
+function count_word_spec(str: seq<char>): nat
+{
+  |set i:nat | 0 <= i < |str| && is_word_start(str, i) :: i|
+}
+
+method p5_7_countWords_better_spec(str: seq<char>) returns (wordCount: nat)
+  ensures wordCount == count_word_spec(str)
+  ensures wordCount <= |str|
+  ensures |str| == 0 ==> wordCount == 0
+  // if there are no spaces, then there is either 0 or 1 words depending on whether the string is empty or not
+  ensures (forall i :: 0 <= i < |str| ==> str[i] != ' ') ==> wordCount == (if |str| == 0 then 0 else 1) 
+  // if there is at least one space, then there are at least 2 words
+  ensures (exists i :: 0 <= i < |str| && is_word_start(str, i)) ==> 1 <= wordCount 
+  ensures 1 <= wordCount ==> (exists i :: 0 <= i < |str| && is_word_start(str, i)) // if there is at least one word, then there is at least one index that is the start of a word
+{
+  // implementation
+}
+
+//Everything good upto this point. 
 
 // It is a well-known phenomenon that most people are easily able to read a text whose
 //words have two characters flipped, provided the first and last letter of each word are

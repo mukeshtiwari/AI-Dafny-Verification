@@ -17,6 +17,7 @@ ensures sum == 338350
 {
 }
 
+
 function pow(base: int, exp: int): int
   requires  0 <= exp
   decreases exp
@@ -31,6 +32,24 @@ ensures forall i :: 0 <= i < |powers| ==> powers[i] == pow(2, i)
 {
   
 }
+
+
+function pow_nat(base: int, exp: nat): int 
+decreases exp
+{
+  match exp
+  case 0 => 1
+  case _ => base * pow_nat(base, exp - 1)
+}
+
+method p4_1_c_powers_of_two_array() returns (powers: array<int>)
+ensures |powers| == 21
+ensures forall i :: 0 <= i < powers.Length ==> powers[i] == pow_nat(2, i)
+{
+  
+}
+
+
 
 function sum_odd(a: int, b: int): int
 decreases b - a

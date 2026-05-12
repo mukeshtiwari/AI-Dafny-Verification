@@ -170,16 +170,41 @@ method p5_7_countWords_better_spec(str: seq<char>) returns (wordCount: nat)
   ensures wordCount == count_word_spec(str)
   ensures wordCount <= |str|
   ensures |str| == 0 ==> wordCount == 0
-  // if there are no spaces, then there is either 0 or 1 words depending on whether the string is empty or not
   ensures (forall i :: 0 <= i < |str| ==> str[i] != ' ') ==> wordCount == (if |str| == 0 then 0 else 1) 
-  // if there is at least one space, then there are at least 2 words
   ensures (exists i :: 0 <= i < |str| && is_word_start(str, i)) ==> 1 <= wordCount 
   ensures 1 <= wordCount ==> (exists i :: 0 <= i < |str| && is_word_start(str, i)) // if there is at least one word, then there is at least one index that is the start of a word
 {
   // implementation
 }
 
-//Everything good upto this point. 
+// array version of the above spec 
+function is_word_start_array(str: array<char>, i: int) : bool
+requires 0 <= i < str.Length
+reads str 
+{
+  0 <= i < str.Length &&
+  str[i] != ' ' &&
+  (i == 0 || str[i - 1] == ' ')
+}
+
+function count_word_spec_array(str: array<char>): nat
+reads str
+{
+  |set i:nat | 0 <= i < str.Length && is_word_start_array(str, i) :: i|
+}
+
+method p5_7_countWords_better_spec_array(str: array<char>) returns (wordCount: nat)
+  ensures wordCount == count_word_spec_array(str)
+  ensures wordCount <= str.Length
+  ensures str.Length == 0 ==> wordCount == 0
+  ensures (forall i :: 0 <= i < str.Length ==> str[i] != ' ') ==> wordCount == (if str.Length == 0 then 0 else 1) 
+  ensures (exists i :: 0 <= i < str.Length && is_word_start_array(str, i)) ==> 1 <= wordCount 
+  ensures 1 <= wordCount ==> (exists i :: 0 <= i < str.Length && is_word_start_array(str, i)) // if there is at least one word, then there is at least one index that is the start of a word
+{
+  // implementation
+}
+
+
 
 // It is a well-known phenomenon that most people are easily able to read a text whose
 //words have two characters flipped, provided the first and last letter of each word are
@@ -196,6 +221,15 @@ requires 1 <= |word| && forall w :: w in word ==> 1 <= |w|
 ensures |scrambled| == |word|
 ensures forall i :: 0 <= i < |word| ==> |scrambled[i]| == |word[i]|
 ensures forall i :: 0 <= i < |word| ==> word[i][0] == scrambled[i][0] && word[i][|word[i]| - 1] == scrambled[i][|scrambled[i]| - 1]
+{  
+}
+
+method p5_8_scramble_array(word: array<string>) returns (scrambled: array<string>)
+requires 1 <= word.Length && forall w :: w in word[..] ==> 1 <= |w|
+ensures scrambled.Length == word.Length
+ensures forall i :: 0 <= i < word.Length ==> |scrambled[i]| == |word[i]|
+ensures forall i :: 0 <= i < word.Length ==> word[i][0] == scrambled[i][0] && 
+  word[i][|word[i]| - 1] == scrambled[i][|scrambled[i]| - 1]
 {  
 }
 

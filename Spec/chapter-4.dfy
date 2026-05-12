@@ -102,6 +102,16 @@ ensures exists x :: x in inputs && max == x
 {  
 }
 
+method p4_2_a_min_max_array(inputs: array<int>) returns (min: int, max: int)
+requires 0 < inputs.Length
+ensures forall i :: 0 <= i < inputs.Length ==> min <= inputs[i]
+ensures forall i :: 0 <= i < inputs.Length ==> max >= inputs[i]
+ensures exists i :: 0 <= i < inputs.Length && min == inputs[i]
+ensures exists i :: 0 <= i < inputs.Length && max == inputs[i]
+{  
+}
+
+
 method p4_2_b_count_even_odd(inputs: seq<int>) returns (even_count: int, odd_count: int)
 ensures even_count + odd_count == |inputs|
 ensures forall x :: x in inputs && x % 2 == 0 ==> even_count >= 1
@@ -111,12 +121,31 @@ ensures (forall x :: x in inputs ==> x % 2 == 1) ==> even_count == 0 // all inpu
 {  
 }
 
+method p4_2_b_count_even_odd_array(inputs: array<int>) returns (even_count: int, odd_count: int)
+ensures even_count + odd_count == inputs.Length
+ensures forall i :: 0 <= i < inputs.Length && inputs[i] % 2 == 0 ==> even_count >= 1
+ensures forall i :: 0 <= i < inputs.Length && inputs[i] % 2 == 1 ==> odd_count >= 1
+ensures (forall i :: 0 <= i < inputs.Length ==> inputs[i] % 2 == 0) ==> odd_count == 0 // all inputs are even
+ensures (forall i :: 0 <= i < inputs.Length ==> inputs[i] % 2 == 1) ==> even_count == 0 // all inputs are odd
+{  
+}
+
+
 method p4_2_c_cumulative_totals(inputs: seq<int>) returns (totals: seq<int>)
 requires 0 < |inputs|
 ensures |totals| == |inputs|
 ensures forall i :: 0 <= i < |inputs| ==> totals[i] == (if i == 0 then inputs[0] else totals[i - 1] + inputs[i])
 {  
 }
+
+
+method p4_2_c_cumulative_totals_array(inputs: array<int>) returns (totals: array<int>)
+requires 0 < inputs.Length
+ensures totals.Length == inputs.Length
+ensures forall i :: 0 <= i < inputs.Length ==> totals[i] == (if i == 0 then inputs[0] else totals[i - 1] + inputs[i])
+{  
+}
+
 
 function contiguous_duplicates(inputs: seq<int>, i : int, j : int, d : int) : (b : bool) 
   requires 0 <= i < j < |inputs|
@@ -133,6 +162,24 @@ ensures forall d :: d in duplicates ==> d in inputs
 ensures forall i :: 0 <= i < |inputs| - 1 && inputs[i] == inputs[i + 1] ==> inputs[i] in duplicates
 ensures forall d :: d in duplicates ==> exists i :: 0 <= i < |inputs| - 1 && inputs[i] == inputs[i + 1] && inputs[i] == d
 ensures forall d :: d in duplicates ==> exists i, j :: 0 <= i < j < |inputs| && contiguous_duplicates(inputs, i, j, d) == true 
+{  
+}
+
+function contiguous_duplicates_array(inputs: array<int>, i : int, j : int, d : int) : (b : bool) 
+  requires 0 <= i < j < inputs.Length
+  decreases j - i
+{
+  if i + 1 == j then inputs[i] == inputs[j] == d
+  else if inputs[i] == d then contiguous_duplicates_array(inputs, i + 1, j, d)
+  else false
+}
+
+
+method p4_2_d_adjacent_duplicates_array(inputs: array<int>) returns (duplicates: array<int>)
+ensures forall d :: d in duplicates[..] ==> d in inputs[..]
+ensures forall i :: 0 <= i < inputs.Length - 1 && inputs[i] == inputs[i + 1] ==> inputs[i] in duplicates[..]
+ensures forall d :: d in duplicates[..] ==> exists i :: 0 <= i < inputs.Length - 1 && inputs[i] == inputs[i + 1] && inputs[i] == d
+ensures forall d :: d in duplicates[..] ==> exists i, j :: 0 <= i < j < inputs.Length && contiguous_duplicates_array(inputs, i, j, d) == true 
 {  
 }
 
@@ -176,6 +223,12 @@ ensures forall i :: 0 <= i < |s| && s[i] in ['a','e','i','o','u','A','E','I','O'
 {  
 } 
 
+method p4_3_e_positions_of_vowels_array(s: string) returns (positions: array<int>)
+ensures forall p :: p in positions[..] ==> 0 <= p < |s| && s[p] in ['a','e','i','o','u','A','E','I','O','U']
+ensures forall i :: 0 <= i < |s| && s[i] in ['a','e','i','o','u','A','E','I','O','U'] ==> i in positions[..]
+{  
+} 
+
 // p4.4 Complete the program in How To 4.1 on page 169. Your program should read twelve
 // temperature values and print the month with the highest temperature.
 
@@ -205,6 +258,28 @@ ensures exists v :: v in values && max == v
 {  
 }
 
+function sum_array(values: array<real>, i: nat): real
+  requires i <= values.Length
+  decreases values.Length - i
+{
+  if i == values.Length then 0.0
+  else values[i] + sum_array(values, i + 1)
+}
+
+
+
+method p4_5_analyze_floats_array(values: array<real>) returns (average: real, min: real, max: real, range: real)
+requires 0 < values.Length
+ensures average == (sum_array(values, 0) / values.Length as real)
+ensures forall v :: v in values[..] ==> min <= v
+ensures forall v :: v in values[..] ==> max >= v
+ensures range == max - min
+ensures exists v :: v in values[..] && min == v
+ensures exists v :: v in values[..] && max == v
+{  
+}
+
+
 
 //4.6 Translate the following pseudocode for finding the minimum value from a set of
 // inputs into a Java program.
@@ -221,6 +296,13 @@ method p4_6_find_minimum(inputs: seq<int>) returns (min: int)
 requires 0 < |inputs|
 ensures forall x :: x in inputs ==> min <= x
 ensures exists x :: x in inputs && min == x
+{  
+}
+
+method p4_6_find_minimum_array(inputs: array<int>) returns (min: int)
+requires 0 < inputs.Length
+ensures forall x :: x in inputs[..] ==> min <= x
+ensures exists x :: x in inputs[..] && min == x
 {  
 }
 

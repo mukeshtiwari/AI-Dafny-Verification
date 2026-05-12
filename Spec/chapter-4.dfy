@@ -6,45 +6,36 @@
 //d. The sum of all odd numbers between a and b (inclusive), where a and b are inputs.
 //e. The sum of all odd digits of an input. (For example, if the input is 32677, the sum would be 3 + 7 + 7 = 17.)
 
-method p4_1_a_sum_even_numbers() returns (sum: int)
+method p4_1_a_sum_even_numbers() returns (sum: nat)
 ensures sum == 2550
 {
   
 }
 
-method p4_1_b_sum_squares() returns (sum: int)
+method p4_1_b_sum_squares() returns (sum: nat)
 ensures sum == 338350
 {
 }
 
 
-function pow(base: int, exp: int): int
-  requires  0 <= exp
-  decreases exp
+function pow(base: int, exp: nat): int
 {
   if exp == 0 then 1 else base * pow(base, exp - 1)
 }
 
 //Dafny does not have pow function 
-method p4_1_c_powers_of_two() returns (powers: seq<int>)
+method p4_1_c_powers_of_two() returns (powers: seq<nat>)
 ensures |powers| == 21
-ensures forall i :: 0 <= i < |powers| ==> powers[i] == pow(2, i)
+ensures forall i :: 0 <= i < |powers| ==> powers[i] == pow(2 as nat, i)
 {
   
 }
 
 
-function pow_nat(base: int, exp: nat): int 
-decreases exp
-{
-  match exp
-  case 0 => 1
-  case _ => base * pow_nat(base, exp - 1)
-}
 
-method p4_1_c_powers_of_two_array() returns (powers: array<int>)
+method p4_1_c_powers_of_two_array() returns (powers: array<nat>)
 ensures powers.Length == 21
-ensures forall i :: 0 <= i < powers.Length ==> powers[i] == pow_nat(2, i)
+ensures forall i :: 0 <= i < powers.Length ==> powers[i] == pow(2 as nat, i)
 {
   
 }
@@ -66,7 +57,7 @@ ensures sum == sum_odd(a, b)  // closed formula for addition of odd numbers betw
 
 
 
-function sum_odd_digits(n: int): int
+function sum_odd_digits(n: nat): nat
 decreases n
 {
   if n % 10 < 10 then 
@@ -75,8 +66,9 @@ decreases n
   else sum_odd_digits(n / 10)
 }
 
-
-method p4_1_e_sum_odd_digits(n: int) returns (sum: int)
+// The sum of all odd digits of an input. (For example, if the input is 32677, the sum would be 3 + 7 + 7 = 17.)
+// I am assuming that the input is a non-negative integer (nat) since it is not specified in the problem statement. 
+method p4_1_e_sum_odd_digits(n: nat) returns (sum: nat)
 ensures sum >= 0
 ensures sum == sum_odd_digits(n)
 {  
@@ -112,7 +104,7 @@ ensures exists i :: 0 <= i < inputs.Length && max == inputs[i]
 }
 
 
-method p4_2_b_count_even_odd(inputs: seq<int>) returns (even_count: int, odd_count: int)
+method p4_2_b_count_even_odd(inputs: seq<int>) returns (even_count: nat, odd_count: nat)
 ensures even_count + odd_count == |inputs|
 ensures forall x :: x in inputs && x % 2 == 0 ==> even_count >= 1
 ensures forall x :: x in inputs && x % 2 == 1 ==> odd_count >= 1
@@ -121,7 +113,7 @@ ensures (forall x :: x in inputs ==> x % 2 == 1) ==> even_count == 0 // all inpu
 {  
 }
 
-method p4_2_b_count_even_odd_array(inputs: array<int>) returns (even_count: int, odd_count: int)
+method p4_2_b_count_even_odd_array(inputs: array<int>) returns (even_count: nat, odd_count: nat)
 ensures even_count + odd_count == inputs.Length
 ensures forall i :: 0 <= i < inputs.Length && inputs[i] % 2 == 0 ==> even_count >= 1
 ensures forall i :: 0 <= i < inputs.Length && inputs[i] % 2 == 1 ==> odd_count >= 1
@@ -147,7 +139,7 @@ ensures forall i :: 0 <= i < inputs.Length ==> totals[i] == (if i == 0 then inpu
 }
 
 
-function contiguous_duplicates(inputs: seq<int>, i : int, j : int, d : int) : (b : bool) 
+function contiguous_duplicates(inputs: seq<int>, i : nat, j : nat, d : int) : (b : bool) 
   requires 0 <= i < j < |inputs|
   decreases j - i
 {
@@ -165,7 +157,7 @@ ensures forall d :: d in duplicates ==> exists i, j :: 0 <= i < j < |inputs| && 
 {  
 }
 
-function contiguous_duplicates_array(inputs: array<int>, i : int, j : int, d : int) : (b : bool) 
+function contiguous_duplicates_array(inputs: array<int>, i : nat, j : nat, d : int) : (b : bool) 
   requires 0 <= i < j < inputs.Length
   decreases j - i
 {
@@ -210,20 +202,20 @@ ensures forall i :: 0 <= i < |s| ==> (if s[i] in ['a','e','i','o','u','A','E','I
 {  
 }
 
-method p4_3_d_count_vowels(s: string) returns (count: int)
+method p4_3_d_count_vowels(s: string) returns (count: nat)
 ensures count >= 0
 ensures forall c :: c in s && c in ['a','e','i','o','u','A','E','I','O','U'] ==> count >= 1
 ensures (forall c :: c in s ==> c !in ['a','e','i','o','u','A','E','I','O','U']) ==> count == 0
 {  
 }
 
-method p4_3_e_positions_of_vowels(s: string) returns (positions: seq<int>)
+method p4_3_e_positions_of_vowels(s: string) returns (positions: seq<nat>)
 ensures forall p :: p in positions ==> 0 <= p < |s| && s[p] in ['a','e','i','o','u','A','E','I','O','U']
 ensures forall i :: 0 <= i < |s| && s[i] in ['a','e','i','o','u','A','E','I','O','U'] ==> i in positions
 {  
 } 
 
-method p4_3_e_positions_of_vowels_array(s: string) returns (positions: array<int>)
+method p4_3_e_positions_of_vowels_array(s: string) returns (positions: array<nat>)
 ensures forall p :: p in positions[..] ==> 0 <= p < |s| && s[p] in ['a','e','i','o','u','A','E','I','O','U']
 ensures forall i :: 0 <= i < |s| && s[i] in ['a','e','i','o','u','A','E','I','O','U'] ==> i in positions[..]
 {  
@@ -342,7 +334,7 @@ ensures forall i :: 0 <= i < |s| ==> reversed[i] == s[|s| - 1 - i]
 }
 
 // 4. 10 Write a program that reads a word and prints the number of vowels in the word.
-method p4_10_count_vowels(s: string) returns (count: int)
+method p4_10_count_vowels(s: string) returns (count: nat)
 ensures 0 <= count
 ensures forall c :: c in s ==> c in ['a','e','i','o','u','A','E','I','O','U'] ==> count >= 1
 ensures (forall c :: c in s ==> c !in ['a','e','i','o','u','A','E','I','O','U']) ==> count == 0

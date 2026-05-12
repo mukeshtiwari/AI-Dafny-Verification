@@ -43,7 +43,7 @@ decreases exp
 }
 
 method p4_1_c_powers_of_two_array() returns (powers: array<int>)
-ensures |powers| == 21
+ensures powers.Length == 21
 ensures forall i :: 0 <= i < powers.Length ==> powers[i] == pow_nat(2, i)
 {
   

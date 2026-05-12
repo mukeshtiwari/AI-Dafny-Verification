@@ -9,7 +9,7 @@ ensures s == "hugo"
 
 
 
-method p_1_2() returns (i : int)
+method p_1_2() returns (i : nat)
 ensures i == (10 * 11) / 2
 {
 }
@@ -23,7 +23,7 @@ function factorial(n: nat): nat
 }
 
 
-method p_1_3() returns (i : int)
+method p_1_3() returns (i : nat)
 ensures i == factorial(10)
 {
 
@@ -56,7 +56,7 @@ ensures s == " ///// \n \"\"\"\"\" \n+     +"
     
 }
 
-function mystring(s : string, n : int) : string 
+function mystring(s : string, n : nat) : string 
 decreases n
 {
     match n 

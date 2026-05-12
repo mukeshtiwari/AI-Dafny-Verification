@@ -64,10 +64,10 @@ method average (x: int, y: int ) returns (result:real)
 }
 
 // • The distance (absolute value of the difference)
-
-method distance (x: int, y: int ) returns (result:int)
+// Since it is always non-negative, we can return a nat instead of an int.
+method distance (x: int, y: int ) returns (result:nat)
   ensures result >= 0
-  ensures if x >= y then result == x -y else result == y - x
+  ensures if x >= y then result == x - y else result == y - x
 {
 }
 

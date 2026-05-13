@@ -3,17 +3,18 @@
 //call its getArea method
 
 
-function rect_area(width: int, height: int) : int
-  requires 0 <= width && 0 <= height
+function rect_area(width: nat, height: nat) : nat
   ensures rect_area(width, height) == width * height
 {
-  if width == 0 || height == 0 then 0
-  else rect_area(width - 1, height) + height
+  match (width, height)
+  case (0, _) => 0
+  case (_, 0) => 0
+  case (_, _) => rect_area(width - 1, height) + height
 }
 
-method p_13_1_rectangle_area(width: int, height: int) returns (area: int)
-  requires 0 <= width && 0 <= height
-  ensures area == rect_area(width, height) // this spec is here to force AI to come up with a recursive solution
+method p_13_1_rectangle_area(width: nat, height: nat) returns (area: nat)
+  ensures area == rect_area(width, height) 
+  ensures area == width * height
 {
   
 }
@@ -25,17 +26,17 @@ method p_13_1_rectangle_area(width: int, height: int) returns (area: int)
 // width * width = area of square
 // (width - 1) * (width - 1) = width * width - 2 * width + 1 
 // width * width = (width - 1) * (width - 1) + 2 * width - 1
-function square_area(width: int) : int
-  requires 0 <= width
+function square_area(width: nat) : nat
   ensures square_area(width) == width * width
 {
-  if width == 0 then 0
-  else square_area(width - 1) + 2 * width - 1
+  match width
+  case 0 => 0
+  case _ => square_area(width - 1) + 2 * width - 1
 }
 
-method p_13_2_square_area_method(width: int) returns (area: int)
-  requires 0 <= width
-  ensures area == square_area(width) // this spec is here to force AI to come up with a recursive solution
+method p_13_2_square_area_method(width: nat) returns (area: nat)
+  ensures area == square_area(width) 
+  ensures area == width * width
 {
   
 }
@@ -44,7 +45,7 @@ method p_13_2_square_area_method(width: int) returns (area: int)
 //example, reverse("Hello!") returns the string "!olleH". Implement a recursive solution
 //by removing the first character, reversing the remaining text, and combining the two.
 
-function reverse_string(text: seq<char>) : (ret : seq<char>)
+function reverse_string(text: string) : (ret : string)
   ensures |ret| == |text| 
   ensures forall i :: 0 <= i < |text| ==> ret[i] == text[|text| - 1 - i]
 {
@@ -52,10 +53,12 @@ function reverse_string(text: seq<char>) : (ret : seq<char>)
   else [text[|text| - 1]] + reverse_string(text[0..|text| - 1])
 }
 
-method p_13_3_reverse_string_method(text: seq<char>) returns (reversed: seq<char>)
+
+method p_13_3_reverse_string_method(text: string) returns (reversed: string)
   ensures |reversed| == |text|
   ensures reversed == reverse_string(text)
-  ensures forall i :: 0 <= i < |text| ==> reversed[i] == text[|text| - 1 - i] // should I get rid of this?
+  ensures forall i :: 0 <= i < |text| ==> reversed[i] == text[|text| - 1 - i] 
+  ensures text == reverse_string(reversed)
 {
   
 }
@@ -66,11 +69,13 @@ method p_13_3_reverse_string_method(text: seq<char>) returns (reversed: seq<char
 
 
 //P13.5 Implement the reverse method of Exercise P13.3 as an iteration.
-
-method p_13_5_reverse_string_iterative(text: seq<char>) returns (reversed: seq<char>)
+// This problem shows that there is no way we can encode **recursive** and 
+// **iterative** notions in the type system. 
+method p_13_5_reverse_string_iterative(text: string) returns (reversed: string)
   ensures |reversed| == |text|
   ensures forall i :: 0 <= i < |text| ==> reversed[i] == text[|text| - 1 - i]
   ensures reversed == reverse_string(text)
+  ensures text == reverse_string(reversed)
 {
 }
 
@@ -81,7 +86,7 @@ method p_13_5_reverse_string_iterative(text: seq<char>) returns (reversed: seq<c
 //Hint: If the text starts with the string you want to match, then you are done. If not,
 //consider the text that you obtain by removing the first character.
 
-function starts_with(text: seq<char>, str: seq<char>) : (b: bool)
+function starts_with(text: string, str: string) : (b: bool)
   ensures b == (|str| <= |text| && forall i :: 0 <= i < |str| ==> text[i] == str[i])
 {
   if |str| == 0 then true
@@ -90,7 +95,7 @@ function starts_with(text: seq<char>, str: seq<char>) : (b: bool)
   else false
 }
 
-method p_13_6_find_string(text: seq<char>, str: seq<char>) returns (found: bool)
+method p_13_6_find_string(text: string, str: string) returns (found: bool)
   ensures found == (exists i :: 0 <= i <= |text| - |str| && starts_with(text[i..], str) == true)
 {
 }
@@ -105,7 +110,7 @@ method p_13_6_find_string(text: seq<char>, str: seq<char>) returns (found: bool)
 //far the match is from the beginning of the text. Make that value a parameter variable
 //of a helper method
 
-function find_index(text: seq<char>, str: seq<char>, index: int) : (ret : int)
+function find_index(text: string, str: string, index: nat) : (ret : int)
    ensures starts_with(text, str) ==> ret == index 
 {
   if |text| < |str| then -1
@@ -114,7 +119,7 @@ function find_index(text: seq<char>, str: seq<char>, index: int) : (ret : int)
 }
 
 
-method p_13_7_index_of_string(text: seq<char>, str: seq<char>) returns (index: int)
+method p_13_7_index_of_string(text: string, str: string) returns (index: int)
   ensures index == find_index(text, str, 0)
 {
 }
@@ -132,11 +137,18 @@ function find_largest(arr: seq<int>) : int
       if arr[0] >= sub_largest then arr[0] else sub_largest
 }
 
-method p_13_8_largest_in_array(arr: seq<int>) returns (largest: int)
+method p_13_8_largest_in_seq(arr: seq<int>) returns (largest: int)
   requires |arr| >= 1
   ensures largest == find_largest(arr)
 {
 }
+
+method p_13_8_largest_in_array(arr: array<int>) returns (largest: int)
+  requires arr.Length >= 1
+  ensures largest == find_largest(arr[..])
+{
+}
+
 
 //P13.9 Using recursion, compute the sum of all values in an array.
 
@@ -147,8 +159,13 @@ function sum_array(arr: seq<int>) : int
   else arr[0] + sum_array(arr[1..])
 }
 
-method p_13_9_sum_of_array(arr: seq<int>) returns (sum: int)
+method p_13_9_sum_of_seq(arr: seq<int>) returns (sum: int)
   ensures sum == sum_array(arr)
+{
+}
+
+method p_13_9_sum_of_array(arr: array<int>) returns (sum: int)
+  ensures sum == sum_array(arr[..])
 {
 }
 
@@ -182,5 +199,11 @@ function polygon_area(points: seq<(real, real)>) : real
 method p_13_10_compute_polygon_area(points: seq<(real, real)>) returns (area: real)
   requires |points| >= 3
   ensures area == polygon_area(points)
+{
+}
+
+method p_13_10_compute_polygon_area_array(points: array<(real, real)>) returns (area: real)
+  requires points.Length >= 3
+  ensures area == polygon_area(points[..])
 {
 }

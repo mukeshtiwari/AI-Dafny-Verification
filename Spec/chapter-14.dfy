@@ -32,7 +32,19 @@ method p14_4_merge_sort_strings(arr: array<string>) returns (sorted: array<strin
 //by name and also reverse lookups by phone number. Use a binary search for both
 //lookups.
 
-//Todo
+
+// data type but this should be in library. 
+datatype Option<T> = None | Some(value: T)
+
+// Please not that there is nothing in spec that avoid a linear 
+// search implementation in the body of this method. 
+method binary_search(a: array<(string, nat)>, key: string) returns (result: Option<nat>)
+  requires forall i, j :: 0 <= i < j < a.Length ==> a[i].0 <= a[j].0 // array is sorted by the first element
+  ensures result.Some? ==> result.value < a.Length && a[result.value].0 == key
+  ensures result.None? ==> forall i :: 0 <= i < a.Length ==> a[i].0 != key
+{
+
+}
 
 //P14.6 Implement a program that measures the performance of the insertion sort algorithm
 //described in Special Topic 14.2.

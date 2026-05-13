@@ -41,8 +41,7 @@ ensures isSorted == (x <= y && y <= z)
 {
 }
 
-function intToSeq(n: int) : seq<int>
-  requires n >= 0
+function intToSeq(n: nat) : seq<nat>
   ensures forall d :: d in intToSeq(n) ==> 0 <= d < 10
 {
   if n < 10 then [n]
@@ -50,8 +49,7 @@ function intToSeq(n: int) : seq<int>
 }
 
 
-function pow(base: int, exp: int) : int
-  requires exp >= 0
+function pow(base: int, exp: nat) : int
 {
   if exp == 0 then 1
   else base * pow(base, exp - 1)
@@ -59,8 +57,7 @@ function pow(base: int, exp: int) : int
 
 // p5.3 Write the following methods.
 // int firstDigit(int n), returning the first digit of the argument
-method p5_3_firstDigit(n: int) returns (first: int)
-requires 0 <= n 
+method p5_3_firstDigit(n: nat) returns (first: nat)
 ensures 0 <= first < 10
 ensures intToSeq(n)[0] == first // This could be strengthned 
 ensures forall d :: d in intToSeq(n) ==> 0 <= d < 10
@@ -93,15 +90,13 @@ ensures if str.Length % 2 == 1 then middleStr[0] == str[str.Length / 2] else mid
 //that returns the string str repeated n times. For example, repeat("ho", 3) returns
 //"hohoho"
 
-method p5_5_repeat(str: seq<char>, n: int) returns (repeatedStr: seq<char>)
-requires n >= 0
+method p5_5_repeat(str: seq<char>, n: nat) returns (repeatedStr: seq<char>)
 ensures |repeatedStr| == n * |str|
 ensures forall i :: 0 <= i < n ==> repeatedStr[i * |str| .. (i + 1) * |str|] == str
 {
 }
 
-method p5_5_repeat_array(str: array<char>, n: int) returns (repeatedStr: array<char>)
-requires n >= 0
+method p5_5_repeat_array(str: array<char>, n: nat) returns (repeatedStr: array<char>)
 ensures repeatedStr.Length == n * str.Length
 ensures forall i :: 0 <= i < n ==> repeatedStr[i * str.Length .. (i + 1) * str.Length] == str[..]
 {
@@ -113,16 +108,14 @@ ensures forall i :: 0 <= i < n ==> repeatedStr[i * str.Length .. (i + 1) * str.L
 //that returns a count of all vowels in the string str. Vowels are the letters a, e, i, o, and
 //u, and their uppercase variants.
 
-method p5_6_countVowels(str: seq<char>) returns (vowelCount: int)
-ensures vowelCount >= 0
+method p5_6_countVowels(str: seq<char>) returns (vowelCount: nat)
 ensures vowelCount <= |str|
 ensures (forall c :: c in str ==> (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == |str|
 ensures (forall c :: c in str ==> !(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == 0
 {
 }
 
-method p5_6_countVowels_array(str: array<char>) returns (vowelCount: int)
-ensures vowelCount >= 0
+method p5_6_countVowels_array(str: array<char>) returns (vowelCount: nat)
 ensures vowelCount <= str.Length
 ensures (forall c :: c in str[..] ==> (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == str.Length
 ensures (forall c :: c in str[..] ==> !(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == 0
@@ -135,7 +128,7 @@ ensures (forall c :: c in str[..] ==> !(c == 'a' || c == 'e' || c == 'i' || c ==
 // that returns a count of all words in the string str. Words are separated by spaces. For
 // example, countWords("Mary had a little lamb") should return 5.
 
-function count_space(str: seq<char>) : int
+function count_space(str: seq<char>) : nat
 {
   if |str| == 0 then 0
   else if str[0] == ' ' then 1 + count_space(str[1..])
@@ -143,16 +136,17 @@ function count_space(str: seq<char>) : int
 }
 
 
-method p5_7_countWords(str: seq<char>) returns (wordCount: int)
-ensures wordCount >= 0
+method p5_7_countWords(str: seq<char>) returns (wordCount: nat)
 ensures if |str| == 0 then wordCount == 0 else wordCount >= 1
 ensures wordCount == count_space(str) + 1
 {
 }
 
 // this is probably a better spec
-// it checks if i is the start of a word or not. 
-function is_word_start(str: seq<char>, i: int): bool
+// it checks if i is the start of a word or not and the 
+// previous character is a space or not, except for the first character where 
+// we just check if it is a space or not.
+function is_word_start(str: seq<char>, i: nat): bool
 {
   0 <= i < |str| &&
   str[i] != ' ' &&
@@ -178,7 +172,7 @@ method p5_7_countWords_better_spec(str: seq<char>) returns (wordCount: nat)
 }
 
 // array version of the above spec 
-function is_word_start_array(str: array<char>, i: int) : bool
+function is_word_start_array(str: array<char>, i: nat) : bool
 requires 0 <= i < str.Length
 reads str 
 {

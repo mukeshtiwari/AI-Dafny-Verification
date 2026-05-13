@@ -6,7 +6,7 @@
 //• All elements in reverse order.
 // • Only the first and last element.
 
-method p6_1_process_array(arr: seq<int>) returns (even_indexed: seq<int>, even_elements: seq<int>, reversed: seq<int>, first_and_last: seq<int>)
+method p6_1_process(arr: seq<int>) returns (even_indexed: seq<int>, even_elements: seq<int>, reversed: seq<int>, first_and_last: seq<int>)
   requires |arr| == 10
   ensures even_indexed == [arr[0], arr[2], arr[4], arr[6], arr[8]]
   ensures forall i :: 0 <= i < 5 ==> even_indexed[i] == arr[2 * i]
@@ -16,6 +16,18 @@ method p6_1_process_array(arr: seq<int>) returns (even_indexed: seq<int>, even_e
   ensures first_and_last == [arr[0], arr[|arr| - 1]]
 {  
 }
+
+method p6_1_process_array(arr: array<int>) returns (even_indexed: array<int>, even_elements: array<int>, reversed: array<int>, first_and_last: array<int>)
+  requires arr.Length == 10
+  ensures even_indexed[..] == [arr[0], arr[2], arr[4], arr[6], arr[8]]
+  ensures forall i :: 0 <= i < 5 ==> even_indexed[i] == arr[2 * i]
+  ensures forall i :: 0 <= i < arr.Length ==> arr[i] % 2 == 0 ==> exists j :: 0 <= j < even_elements.Length && even_elements[j] == arr[i] // unique existence? 
+  ensures reversed.Length == arr.Length
+  ensures forall i :: 0 <= i < reversed.Length ==> reversed[i] == arr[arr.Length - 1 - i]
+  ensures first_and_last[..] == [arr[0], arr[arr.Length - 1]]
+{  
+}
+
 
 //p6.2 Write array methods that carry out the following tasks for an array of integers. For
 //each method, provide a test program.
@@ -43,6 +55,16 @@ method p6_2_a_swap_first_last(arr: seq<int>) returns (result: seq<int>)
 {  
 }
 
+
+method p6_2_a_swap_first_last_array(arr: array<int>) returns (result: array<int>)
+  requires arr.Length >= 2
+  ensures result.Length == arr.Length
+  ensures result[0] == arr[arr.Length - 1]
+  ensures result[arr.Length - 1] == arr[0]
+  ensures forall i :: 1 <= i < arr.Length - 1 ==> result[i] == arr[i]
+{  
+}
+  
 method p6_2_b_shift_right(arr: seq<int>) returns (result: seq<int>)
   requires |arr| >= 1
   ensures |result| == |arr|
@@ -51,11 +73,28 @@ method p6_2_b_shift_right(arr: seq<int>) returns (result: seq<int>)
 {  
 }
 
+method p6_2_b_shift_right_array(arr: array<int>) returns (result: array<int>)
+  requires arr.Length >= 1
+  ensures result.Length == arr.Length
+  ensures result[0] == arr[arr.Length - 1]
+  ensures forall i :: 1 <= i < arr.Length ==> result[i] == arr[i - 1]
+{  
+}
+  
+
 method p6_2_c_replace_even_with_zero(arr: seq<int>) returns (result: seq<int>)
   ensures |result| == |arr|
   ensures forall i :: 0 <= i < |arr| ==> (arr[i] % 2 == 0 ==> result[i] == 0) && (arr[i] % 2 != 0 ==> result[i] == arr[i])
 {  
 }
+
+
+method p6_2_c_replace_even_with_zero_array(arr: array<int>) returns (result: array<int>)
+  ensures result.Length == arr.Length
+  ensures forall i :: 0 <= i < arr.Length ==> (arr[i] % 2 == 0 ==> result[i] == 0) && (arr[i] % 2 != 0 ==> result[i] == arr[i])
+{  
+}
+
 
 method p6_2_d_replace_with_larger_neighbor(arr: seq<int>) returns (result: seq<int>)
   requires |arr| >= 3
@@ -67,6 +106,17 @@ method p6_2_d_replace_with_larger_neighbor(arr: seq<int>) returns (result: seq<i
 }
 
 
+method p6_2_d_replace_with_larger_neighbor_array(arr: array<int>) returns (result: array<int>)
+  requires arr.Length >= 3
+  ensures result.Length == arr.Length
+  ensures result[0] == arr[0]
+  ensures result[arr.Length - 1] == arr[arr.Length - 1]
+  ensures forall i :: 1 <= i < arr.Length - 1 ==> result[i] == if arr[i - 1] >= arr[i + 1] then arr[i - 1] else arr[i + 1]
+{  
+}
+
+
+
 method p6_2_e_remove_middle(arr: seq<int>) returns (result: seq<int>)
   requires |arr| >= 1
   ensures |result| == if |arr| % 2 == 1 then |arr| - 1 else |arr| - 2
@@ -75,6 +125,16 @@ method p6_2_e_remove_middle(arr: seq<int>) returns (result: seq<int>)
 {  
 }
 
+
+method p6_2_e_remove_middle_array(arr: array<int>) returns (result: array<int>)
+  requires arr.Length >= 1
+  ensures result.Length == if arr.Length % 2 == 1 then arr.Length - 1 else arr.Length - 2
+  ensures arr.Length % 2 == 1 ==> forall i :: 0 <= i < arr.Length / 2 ==> result[i] == arr[i] && forall j :: arr.Length / 2 <= j < result.Length ==> result[j] == arr[j + 1]
+  ensures arr.Length % 2 == 0 ==> forall i :: 0 <= i < arr.Length / 2 - 1 ==> result[i] == arr[i] && forall j :: arr.Length / 2 - 1 <= j < result.Length ==> result[j] == arr[j + 2]
+{  
+}
+
+
 method p6_2_f_move_even_to_front(arr: seq<int>) returns (result: seq<int>)
   ensures |result| == |arr|
   ensures forall i, j :: 0 <= i < j < |result| && result[i] % 2 == 0 && result[j] % 2 != 0
@@ -82,6 +142,12 @@ method p6_2_f_move_even_to_front(arr: seq<int>) returns (result: seq<int>)
 {  
 }
 
+method p6_2_f_move_even_to_front_array(arr: array<int>) returns (result: array<int>)
+  ensures result.Length == arr.Length
+  ensures forall i, j :: 0 <= i < j < result.Length && result[i] % 2 == 0 && result[j] % 2 != 0
+  ensures forall i :: 0 <= i < arr.Length ==> exists j :: 0 <= j < result.Length && arr[i] == result[j]
+{  
+}
 
 
 function find_largest(arr: seq<int>) : (ret : int)
@@ -105,11 +171,40 @@ method p6_2_g_second_largest(arr: seq<int>) returns (second_largest: int)
 {  
 }
 
+// The second largest element is the largest element that is 
+// strictly smaller than the maximum element.
+predicate second_largest_in_array_predicate(a: array<int>, s: int)
+  requires 2 <= a.Length
+  reads a
+{
+  // s is an element of the array
+  (exists i :: 0 <= i < a.Length && a[i] == s) &&
+  // there is a maximum a[j], and s is the largest value strictly below a[j]
+  (exists j :: 0 <= j < a.Length && s < a[j] &&
+    (forall k :: 0 <= k < a.Length ==> a[k] <= a[j]) &&
+    (forall k :: 0 <= k < a.Length ==> a[k] == a[j] || a[k] <= s))
+}
+
+method p6_2_g_second_largest_array(arr: array<int>) returns (second_largest: int)
+  requires arr.Length >= 2
+  ensures second_largest_in_array_predicate(arr, second_largest)
+  ensures forall x :: x in arr[..] ==> x < find_largest(arr[..]) ==> x <= second_largest
+{  
+}
+
+
 
 method p6_2_h_is_sorted(arr: seq<int>) returns (isSorted: bool)
   ensures isSorted == (forall i :: 0 <= i < |arr| - 1 ==> arr[i] <= arr[i + 1])
 {  
 }
+
+
+method p6_2_h_is_sorted_array(arr: array<int>) returns (isSorted: bool)
+  ensures isSorted == (forall i :: 0 <= i < arr.Length - 1 ==> arr[i] <= arr[i + 1])
+{  
+}
+
 
 function count_adajacent_duplicates(arr: seq<int>, i: int) : int
   requires 0 <= i < |arr| - 1
@@ -128,12 +223,25 @@ method p6_2_i_has_adjacent_duplicates(arr: seq<int>) returns (hasDuplicates: boo
 {  
 }
 
+method p6_2_i_has_adjacent_duplicates_array(arr: array<int>) returns (hasDuplicates: bool)
+  requires arr.Length >= 2
+  ensures hasDuplicates == true ==> (exists i :: 0 <= i < arr.Length - 1 && arr[i] == arr[i + 1])
+  ensures hasDuplicates == false ==> (forall i :: 0 <= i < arr.Length - 1 ==> arr[i] != arr[i + 1])
+{  
+}
+
+
 method p6_2_j_has_duplicates(arr: seq<int>) returns (hasDuplicates: bool)
   requires |arr| >= 2
   ensures hasDuplicates == (exists i, j :: 0 <= i < j < |arr| && arr[i] == arr[j])
 {  
 }
 
+method p6_2_j_has_duplicates_array(arr: array<int>) returns (hasDuplicates: bool)
+  requires arr.Length >= 2
+  ensures hasDuplicates == (exists i, j :: 0 <= i < j < arr.Length && arr[i] == arr[j])
+{  
+}
 
 //p6.3 Modify the LargestInArray.java program in Section 6.3 to mark both the smallest and
 //the largest elements.
@@ -170,6 +278,12 @@ method p6_4_sum_without_smallest(arr: seq<int>) returns (sum: int)
 {  
 }
 
+method p6_4_sum_without_smallest_array(arr: array<int>) returns (sum: int)
+  requires arr.Length >= 1
+  ensures sum == sum_array(arr[..]) - find_smallest(arr[..])
+{
+}
+
 
 //p6.5 Write a method public static void removeMin that removes the minimum value from a
 //partially filled array without calling other methods.
@@ -193,18 +307,28 @@ method p6_6_alternating_sum(arr: seq<int>) returns (alt_sum: int)
 }
 
 
+method p6_6_alternating_sum_array(arr: array<int>) returns (alt_sum: int)
+ ensures alt_sum == sum_arrray(arr[..], 1)
+{
+}
+
 // P6.7 Write a method that reverses the sequence of elements in an array. For example, if
 //you call the method with the array
 //1 4 9 16 9 7 4 9 11
 //then the array is changed to
 //11 9 4 7 9 16 9 4 1
 
-method p6_7_reverse_array(arr: seq<int>) returns (reversed: seq<int>)
+method p6_7_reverse(arr: seq<int>) returns (reversed: seq<int>)
   ensures |reversed| == |arr|
   ensures forall i :: 0 <= i < |reversed| ==> reversed[i] == arr[|arr| - 1 - i]
 {  
 }
 
+method p6_7_reverse_array(arr: array<int>) returns (reversed: array<int>)
+  ensures reversed.Length == arr.Length
+  ensures forall i :: 0 <= i < reversed.Length ==> reversed[i] == arr[arr.Length - 1 - i]
+{  
+}
 // p6.8 Write a method that implements the algorithm developed in Section 6.6.
 // Todo
 
@@ -212,8 +336,13 @@ method p6_7_reverse_array(arr: seq<int>) returns (reversed: seq<int>)
 //public static boolean equals(int[] a, int[] b)
 // that checks whether two arrays have the same elements in the same order.
 
-method p6_9_arrays_equal(arr1: seq<int>, arr2: seq<int>) returns (areEqual: bool)
+method p6_9_seq_equal(arr1: seq<int>, arr2: seq<int>) returns (areEqual: bool)
   ensures areEqual == (|arr1| == |arr2| && forall i :: 0 <= i < |arr1| ==> arr1[i] == arr2[i])
+{  
+}
+
+method p6_9_array_equal(arr1: array<int>, arr2: array<int>) returns (areEqual: bool)
+  ensures areEqual == (arr1.Length == arr2.Length && forall i :: 0 <= i < arr1.Length ==> arr1[i] == arr2[i])
 {  
 }
 
@@ -238,4 +367,9 @@ method p6_10_same_set(arr1: seq<int>, arr2: seq<int>) returns (areSameSet: bool)
 {  
 }
 
+
+method p6_10_same_set_array(arr1: array<int>, arr2: array<int>) returns (areSameSet: bool)
+  ensures areSameSet == (array_to_set(arr1[..]) == array_to_set(arr2[..]))
+{  
+}
 

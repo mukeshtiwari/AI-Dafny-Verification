@@ -1,0 +1,312 @@
+[
+  {
+    "name": "p5_1_a_smallest",
+    "nat_lang_statement": "Write a method double smallest(double x, double y, double z), returning the smallest of the arguments.",
+    "dafny": {
+      "method_signature": "p5_1_a_smallest(x: real, y: real, z: real) returns (smallest: real)",
+      "requires": [],
+      "ensures": [
+        "smallest <= x && smallest <= y && smallest <= z",
+        "smallest == x || smallest == y || smallest == z"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_1_b_average",
+    "nat_lang_statement": "Write a method double average(double x, double y, double z), returning the average of the arguments.",
+    "dafny": {
+      "method_signature": "p5_1_b_average(x: real, y: real, z: real) returns (average: real)",
+      "requires": [],
+      "ensures": [
+        "average == (x + y + z) / 3.0"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_2_a_allTheSame",
+    "nat_lang_statement": "Write a method boolean allTheSame(double x, double y, double z), returning true if the arguments are all the same.",
+    "dafny": {
+      "method_signature": "p5_2_a_allTheSame(x: real, y: real, z: real) returns (allSame: bool)",
+      "requires": [],
+      "ensures": [
+        "allSame == (x == y && y == z)"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_2_b_allDifferent",
+    "nat_lang_statement": "Write a method boolean allDifferent(double x, double y, double z), returning true if the arguments are all different.",
+    "dafny": {
+      "method_signature": "p5_2_b_allDifferent(x: real, y: real, z: real) returns (allDiff: bool)",
+      "requires": [],
+      "ensures": [
+        "allDiff == (x != y && y != z && x != z)"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_2_c_sorted",
+    "nat_lang_statement": "Write a method boolean sorted(double x, double y, double z), returning true if the arguments are sorted, with the smallest one coming first.",
+    "dafny": {
+      "method_signature": "p5_2_c_sorted(x: real, y: real, z: real) returns (isSorted: bool)",
+      "requires": [],
+      "ensures": [
+        "isSorted == (x <= y && y <= z)"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_3_firstDigit",
+    "nat_lang_statement": "Write a method int firstDigit(int n), returning the first digit of the argument.",
+    "dafny": {
+      "method_signature": "p5_3_firstDigit(n: nat) returns (first: nat)",
+      "requires": [],
+      "ensures": [
+        "0 <= first < 10",
+        "intToSeq(n)[0] == first // This could be strengthned ",
+        "forall d :: d in intToSeq(n) ==> 0 <= d < 10"
+      ],
+      "functional_code": "function intToSeq(n: nat) : seq<nat>\n  ensures forall d :: d in intToSeq(n) ==> 0 <= d < 10\n{\n  if n < 10 then [n]\n  else intToSeq(n / 10) + [n % 10]\n}"
+    }
+  },
+  {
+    "name": "p5_4_middle",
+    "nat_lang_statement": "Write a method public static String middle(String str) that returns a string containing the middle character in str if the length of str is odd, or the two middle characters if the length is even. For example, middle(\"middle\") returns \"dd\".",
+    "dafny": {
+      "method_signature": "p5_4_middle(str: seq<char>) returns (middleStr: seq<char>)",
+      "requires": [
+        "0 < |str|"
+      ],
+      "ensures": [
+        "if |str| % 2 == 1 then |middleStr| == 1 else |middleStr| == 2",
+        "if |str| % 2 == 1 then middleStr[0] == str[|str| / 2] else middleStr == str[|str| / 2 - 1 .. |str| / 2 + 1]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_4_middle_array",
+    "nat_lang_statement": "Write a method public static String middle(String str) that returns a string containing the middle character in str if the length of str is odd, or the two middle characters if the length is even. For example, middle(\"middle\") returns \"dd\".",
+    "dafny": {
+      "method_signature": "p5_4_middle_array(str: array<char>) returns (middleStr: array<char>)",
+      "requires": [
+        "0 < str.Length"
+      ],
+      "ensures": [
+        "if str.Length % 2 == 1 then middleStr.Length == 1 else middleStr.Length == 2",
+        "if str.Length % 2 == 1 then middleStr[0] == str[str.Length / 2] else middleStr[..] == str[str.Length / 2 - 1 .. str.Length / 2 + 1]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_5_repeat",
+    "nat_lang_statement": "Write a method public static String repeat(String str, int n) that returns the string str repeated n times. For example, repeat(\"ho\", 3) returns \"hohoho\".",
+    "dafny": {
+      "method_signature": "p5_5_repeat(str: seq<char>, n: nat) returns (repeatedStr: seq<char>)",
+      "requires": [],
+      "ensures": [
+        "|repeatedStr| == n * |str|",
+        "forall i :: 0 <= i < n ==> repeatedStr[i * |str| .. (i + 1) * |str|] == str"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_5_repeat_array",
+    "nat_lang_statement": "Write a method public static String repeat(String str, int n) that returns the string str repeated n times. For example, repeat(\"ho\", 3) returns \"hohoho\".",
+    "dafny": {
+      "method_signature": "p5_5_repeat_array(str: array<char>, n: nat) returns (repeatedStr: array<char>)",
+      "requires": [],
+      "ensures": [
+        "repeatedStr.Length == n * str.Length",
+        "forall i :: 0 <= i < n ==> repeatedStr[i * str.Length .. (i + 1) * str.Length] == str[..]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_6_countVowels",
+    "nat_lang_statement": "Write a method public static int countVowels(String str) that returns a count of all vowels in the string str. Vowels are the letters a, e, i, o, and u, and their uppercase variants.",
+    "dafny": {
+      "method_signature": "p5_6_countVowels(str: seq<char>) returns (vowelCount: nat)",
+      "requires": [],
+      "ensures": [
+        "vowelCount <= |str|",
+        "(forall c :: c in str ==> (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == |str|",
+        "(forall c :: c in str ==> !(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == 0"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_6_countVowels_array",
+    "nat_lang_statement": "Write a method public static int countVowels(String str) that returns a count of all vowels in the string str. Vowels are the letters a, e, i, o, and u, and their uppercase variants.",
+    "dafny": {
+      "method_signature": "p5_6_countVowels_array(str: array<char>) returns (vowelCount: nat)",
+      "requires": [],
+      "ensures": [
+        "vowelCount <= str.Length",
+        "(forall c :: c in str[..] ==> (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == str.Length",
+        "(forall c :: c in str[..] ==> !(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')) ==> vowelCount == 0"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_7_countWords",
+    "nat_lang_statement": "Write a method public static int countWords(String str) that returns a count of all words in the string str. Words are separated by spaces. For example, countWords(\"Mary had a little lamb\") should return 5.",
+    "dafny": {
+      "method_signature": "p5_7_countWords(str: seq<char>) returns (wordCount: nat)",
+      "requires": [],
+      "ensures": [
+        "if |str| == 0 then wordCount == 0 else wordCount >= 1",
+        "wordCount == count_space(str) + 1"
+      ],
+      "functional_code": "function count_space(str: seq<char>) : nat\n{\n  if |str| == 0 then 0\n  else if str[0] == ' ' then 1 + count_space(str[1..])\n  else count_space(str[1..])\n}"
+    }
+  },
+  {
+    "name": "p5_7_countWords_better_spec",
+    "nat_lang_statement": "Write a method public static int countWords(String str) that returns a count of all words in the string str. Words are separated by spaces. For example, countWords(\"Mary had a little lamb\") should return 5.",
+    "dafny": {
+      "method_signature": "p5_7_countWords_better_spec(str: seq<char>) returns (wordCount: nat)",
+      "requires": [],
+      "ensures": [
+        "wordCount == count_word_spec(str)",
+        "wordCount <= |str|",
+        "|str| == 0 ==> wordCount == 0",
+        "(forall i :: 0 <= i < |str| ==> str[i] != ' ') ==> wordCount == (if |str| == 0 then 0 else 1) ",
+        "(exists i :: 0 <= i < |str| && is_word_start(str, i)) ==> 1 <= wordCount ",
+        "1 <= wordCount ==> (exists i :: 0 <= i < |str| && is_word_start(str, i)) // if there is at least one word, then there is at least one index that is the start of a word"
+      ],
+      "functional_code": "function is_word_start(str: seq<char>, i: nat): bool\n{\n  0 <= i < |str| &&\n  str[i] != ' ' &&\n  (i == 0 || str[i - 1] == ' ')\n}\n\n// This one builds a set of all the indices that are the start of a word and checks that the word count is the size of that set.\n// For example, for \"Mary had a little lamb\", the set of indices are {0, 5, 9, 11, 18} (hopefully, my counting is correct) and the word count is 5.\n\nfunction count_word_spec(str: seq<char>): nat\n{\n  |set i:nat | 0 <= i < |str| && is_word_start(str, i) :: i|\n}"
+    }
+  },
+  {
+    "name": "p5_7_countWords_better_spec_array",
+    "nat_lang_statement": "Write a method public static int countWords(String str) that returns a count of all words in the string str. Words are separated by spaces. For example, countWords(\"Mary had a little lamb\") should return 5.",
+    "dafny": {
+      "method_signature": "p5_7_countWords_better_spec_array(str: array<char>) returns (wordCount: nat)",
+      "requires": [],
+      "ensures": [
+        "wordCount == count_word_spec_array(str)",
+        "wordCount <= str.Length",
+        "str.Length == 0 ==> wordCount == 0",
+        "(forall i :: 0 <= i < str.Length ==> str[i] != ' ') ==> wordCount == (if str.Length == 0 then 0 else 1) ",
+        "(exists i :: 0 <= i < str.Length && is_word_start_array(str, i)) ==> 1 <= wordCount ",
+        "1 <= wordCount ==> (exists i :: 0 <= i < str.Length && is_word_start_array(str, i)) // if there is at least one word, then there is at least one index that is the start of a word"
+      ],
+      "functional_code": "function is_word_start_array(str: array<char>, i: nat) : bool\nrequires 0 <= i < str.Length\nreads str \n{\n  0 <= i < str.Length &&\n  str[i] != ' ' &&\n  (i == 0 || str[i - 1] == ' ')\n}\n\nfunction count_word_spec_array(str: array<char>): nat\nreads str\n{\n  |set i:nat | 0 <= i < str.Length && is_word_start_array(str, i) :: i|\n}"
+    }
+  },
+  {
+    "name": "p5_8_scramble",
+    "nat_lang_statement": "Write a method String scramble(String word) that constructs a scrambled version of a given word, randomly flipping two characters other than the first and last one. Then write a program that reads words and prints the scrambled words.",
+    "dafny": {
+      "method_signature": "p5_8_scramble(word: seq<string>) returns (scrambled: seq<string>)",
+      "requires": [
+        "1 <= |word| && forall w :: w in word ==> 1 <= |w|"
+      ],
+      "ensures": [
+        "|scrambled| == |word|",
+        "forall i :: 0 <= i < |word| ==> |scrambled[i]| == |word[i]|",
+        "forall i :: 0 <= i < |word| ==> word[i][0] == scrambled[i][0] && word[i][|word[i]| - 1] == scrambled[i][|scrambled[i]| - 1]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_8_scramble_array",
+    "nat_lang_statement": "Write a method String scramble(String word) that constructs a scrambled version of a given word, randomly flipping two characters other than the first and last one. Then write a program that reads words and prints the scrambled words.",
+    "dafny": {
+      "method_signature": "p5_8_scramble_array(word: array<string>) returns (scrambled: array<string>)",
+      "requires": [
+        "1 <= word.Length && forall w :: w in word[..] ==> 1 <= |w|"
+      ],
+      "ensures": [
+        "scrambled.Length == word.Length",
+        "forall i :: 0 <= i < word.Length ==> |scrambled[i]| == |word[i]|",
+        "forall i :: 0 <= i < word.Length ==> word[i][0] == scrambled[i][0] && \n  word[i][|word[i]| - 1] == scrambled[i][|scrambled[i]| - 1]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_9_sphereVolume",
+    "nat_lang_statement": "Write a method public static double sphereVolume(double r) that computes the volume of a sphere with radius r.",
+    "dafny": {
+      "method_signature": "p5_9_sphereVolume(r: real) returns (volume: real)",
+      "requires": [],
+      "ensures": [
+        "volume == (4.0 / 3.0) * 3.14159 * r * r * r"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_9_sphereSurface",
+    "nat_lang_statement": "Write a method public static double sphereSurface(double r) that computes the surface area of a sphere with radius r.",
+    "dafny": {
+      "method_signature": "p5_9_sphereSurface(r: real) returns (surface_area: real)",
+      "requires": [],
+      "ensures": [
+        "surface_area == 4.0 * 3.14159 * r * r"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_9_cylinderVolume",
+    "nat_lang_statement": "Write a method public static double cylinderVolume(double r, double h) that computes the volume of a cylinder with a circular base with radius r and height h.",
+    "dafny": {
+      "method_signature": "p5_9_cylinderVolume(r: real, h: real) returns (volume: real)",
+      "requires": [],
+      "ensures": [
+        "volume == 3.14159 * r * r * h"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_9_cylinderSurface",
+    "nat_lang_statement": "Write a method public static double cylinderSurface(double r, double h) that computes the surface area of a cylinder with a circular base with radius r and height h.",
+    "dafny": {
+      "method_signature": "p5_9_cylinderSurface(r: real, h: real) returns (surface_area: real)",
+      "requires": [],
+      "ensures": [
+        "surface_area == 2.0 * 3.14159 * r * (r + h)"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_9_coneVolume",
+    "nat_lang_statement": "Write a method public static double coneVolume(double r, double h) that computes the volume of a cone with a circular base with radius r and height h.",
+    "dafny": {
+      "method_signature": "p5_9_coneVolume(r: real, h: real) returns (volume: real)",
+      "requires": [],
+      "ensures": [
+        "volume == (1.0 / 3.0) * 3.14159 * r * r * h"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p5_9_coneSurface",
+    "nat_lang_statement": "Write a method public static double coneSurface(double r, double h) that computes the surface area of a cone with a circular base with radius r and height h.",
+    "dafny": {
+      "method_signature": "p5_9_coneSurface(r: real, h: real) returns (surface_area: real)",
+      "requires": [],
+      "ensures": [
+        "surface_area == 3.14159 * r * (r + Sqrt(h * h + r * r))"
+      ],
+      "functional_code": "ghost function Sqrt(x: real): real\n\n// The square root function is characterized by two properties that we axiomatize. First, the square root function is positive.\n\nlemma SqrtPos()\n  ensures forall x: real :: x >= 0.0 ==> Sqrt(x) >= 0.0\n\n// Second, for a given real x, the product of the square root of x with itself is x. That's the essence of the square root function.\n\nlemma SqrtProp()\n  ensures forall x: real :: x >= 0.0 ==> Sqrt(x) * Sqrt(x) == x\n\n// Exercise\n// Our goal is to prove that the square root function is monotonic. First, we will do so as a sequent. Maybe you do not remember how to prove this property, and that's fine. Think about it on paper first, and when you think you might have an argument, see if Dafny accepts it. Hint: assume that the square root function was not monotonic, and show that it is inconsistent.\n\nlemma MonotonicPre(x: real, y: real)\n  requires 0.0 <= x < y\n  ensures Sqrt(x) < Sqrt(y)\n{\n  assert x < y;\n  assert Sqrt(x) * Sqrt(x) < Sqrt(y) * Sqrt(y) by {\n    SqrtProp();\n  }\n  assert Sqrt(x) >= 0.0 && Sqrt(y) >= 0.0 by {\n    SqrtPos();\n  }\n  if Sqrt(x) >= Sqrt(y) {\n    assert Sqrt(x) * Sqrt(x) >= Sqrt(y) * Sqrt(y);\n    assert false;\n  }\n}\n\n// Exercise\n// Using that lemma we just proved, prove the non-sequent version of the theorem.\n\nlemma Monotonic()\n  ensures forall x, y: real :: 0.0 <= x < y ==> Sqrt(x) < Sqrt(y)\n{\n  forall x, y: real ensures 0.0 <= x < y ==> Sqrt(x) < Sqrt(y) {\n    if 0.0 <= x < y {\n      MonotonicPre(x,y);\n    }\n  }\n}"
+    }
+  }
+]

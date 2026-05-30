@@ -1,0 +1,162 @@
+[
+  {
+    "name": "p_13_1_rectangle_area",
+    "nat_lang_statement": "Given a class Rectangle with instance variables width and height, provide a recursive getArea method. Construct a rectangle whose width is one less than the original and call its getArea method.",
+    "dafny": {
+      "method_signature": "p_13_1_rectangle_area(width: nat, height: nat) returns (area: nat)",
+      "requires": [],
+      "ensures": [
+        "area == rect_area(width, height) ",
+        "area == width * height"
+      ],
+      "functional_code": "function rect_area(width: nat, height: nat) : nat\n  ensures rect_area(width, height) == width * height\n{\n  match (width, height)\n  case (0, _) => 0\n  case (_, 0) => 0\n  case (_, _) => rect_area(width - 1, height) + height\n}"
+    }
+  },
+  {
+    "name": "p_13_2_square_area_method",
+    "nat_lang_statement": "Given a class Square with instance variable width, provide a recursive getArea method. Construct a square whose width is one less than the original and call its getArea method.",
+    "dafny": {
+      "method_signature": "p_13_2_square_area_method(width: nat) returns (area: nat)",
+      "requires": [],
+      "ensures": [
+        "area == square_area(width) ",
+        "area == width * width"
+      ],
+      "functional_code": "function square_area(width: nat) : nat\n  ensures square_area(width) == width * width\n{\n  match width\n  case 0 => 0\n  case _ => square_area(width - 1) + 2 * width - 1\n}"
+    }
+  },
+  {
+    "name": "p_13_3_reverse_string_method",
+    "nat_lang_statement": "Write a recursive method String reverse(String text) that reverses a string. For example, reverse(\"Hello!\") returns the string \"!olleH\". Implement a recursive solution by removing the first character, reversing the remaining text, and combining the two.",
+    "dafny": {
+      "method_signature": "p_13_3_reverse_string_method(text: string) returns (reversed: string)",
+      "requires": [],
+      "ensures": [
+        "|reversed| == |text|",
+        "reversed == reverse_string(text)",
+        "forall i :: 0 <= i < |text| ==> reversed[i] == text[|text| - 1 - i] ",
+        "text == reverse_string(reversed)"
+      ],
+      "functional_code": "function reverse_string(text: string) : (ret : string)\n  ensures |ret| == |text| \n  ensures forall i :: 0 <= i < |text| ==> ret[i] == text[|text| - 1 - i]\n{\n  if |text| == 0 then []\n  else [text[|text| - 1]] + reverse_string(text[0..|text| - 1])\n}"
+    }
+  },
+  {
+    "name": "p_13_5_reverse_string_iterative",
+    "nat_lang_statement": "Implement the reverse method of Exercise P13.3 as an iteration.",
+    "dafny": {
+      "method_signature": "p_13_5_reverse_string_iterative(text: string) returns (reversed: string)",
+      "requires": [],
+      "ensures": [
+        "|reversed| == |text|",
+        "forall i :: 0 <= i < |text| ==> reversed[i] == text[|text| - 1 - i]",
+        "reversed == reverse_string(text)",
+        "text == reverse_string(reversed)"
+      ],
+      "functional_code": "function reverse_string(text: string) : (ret : string)\n  ensures |ret| == |text| \n  ensures forall i :: 0 <= i < |text| ==> ret[i] == text[|text| - 1 - i]\n{\n  if |text| == 0 then []\n  else [text[|text| - 1]] + reverse_string(text[0..|text| - 1])\n}"
+    }
+  },
+  {
+    "name": "p_13_6_find_string",
+    "nat_lang_statement": "Use recursion to implement a method public static boolean find(String text, String str) that tests whether a given text contains a string. For example, find(\"Mississippi\", \"sip\") returns true. If the text starts with the string you want to match, then you are done. If not, consider the text that you obtain by removing the first character.",
+    "dafny": {
+      "method_signature": "p_13_6_find_string(text: string, str: string) returns (found: bool)",
+      "requires": [],
+      "ensures": [
+        "found == (exists i :: 0 <= i <= |text| - |str| && starts_with(text[i..], str) == true)"
+      ],
+      "functional_code": "function starts_with(text: string, str: string) : (b: bool)\n  ensures b == (|str| <= |text| && forall i :: 0 <= i < |str| ==> text[i] == str[i])\n{\n  if |str| == 0 then true\n  else if |text| == 0 then false\n  else if text[0] == str[0] then starts_with(text[1..], str[1..])\n  else false\n}"
+    }
+  },
+  {
+    "name": "p_13_7_index_of_string",
+    "nat_lang_statement": "Use recursion to implement a method public static int indexOf(String text, String str) that returns the starting position of the first substring of the text that matches str. Return -1 if str is not a substring of the text. For example, s.indexOf(\"Mississippi\", \"sip\") returns 6. Keep track of how far the match is from the beginning of the text using a helper method parameter.",
+    "dafny": {
+      "method_signature": "p_13_7_index_of_string(text: string, str: string) returns (index: int)",
+      "requires": [],
+      "ensures": [
+        "index == find_index(text, str, 0)"
+      ],
+      "functional_code": "function starts_with(text: string, str: string) : (b: bool)\n  ensures b == (|str| <= |text| && forall i :: 0 <= i < |str| ==> text[i] == str[i])\n{\n  if |str| == 0 then true\n  else if |text| == 0 then false\n  else if text[0] == str[0] then starts_with(text[1..], str[1..])\n  else false\n}\n\nfunction find_index(text: string, str: string, index: nat) : (ret : int)\n   ensures starts_with(text, str) ==> ret == index \n{\n  if |text| < |str| then -1\n  else if starts_with(text, str) then index\n  else find_index(text[1..], str, index + 1)\n}"
+    }
+  },
+  {
+    "name": "p_13_8_largest_in_seq",
+    "nat_lang_statement": "Using recursion, find the largest element in an array.",
+    "dafny": {
+      "method_signature": "p_13_8_largest_in_seq(arr: seq<int>) returns (largest: int)",
+      "requires": [
+        "|arr| >= 1"
+      ],
+      "ensures": [
+        "largest == find_largest(arr)"
+      ],
+      "functional_code": "function find_largest(arr: seq<int>) : int\n  requires |arr| >= 1\n  ensures forall x :: x in arr ==> find_largest(arr) >= x\n{\n  if |arr| == 1 then arr[0]\n  else \n      assert arr == [arr[0]] + arr[1..];\n      var sub_largest := find_largest(arr[1..]) ;\n      if arr[0] >= sub_largest then arr[0] else sub_largest\n}"
+    }
+  },
+  {
+    "name": "p_13_8_largest_in_array",
+    "nat_lang_statement": "Using recursion, find the largest element in an array.",
+    "dafny": {
+      "method_signature": "p_13_8_largest_in_array(arr: array<int>) returns (largest: int)",
+      "requires": [
+        "arr.Length >= 1"
+      ],
+      "ensures": [
+        "largest == find_largest(arr[..])"
+      ],
+      "functional_code": "function find_largest(arr: seq<int>) : int\n  requires |arr| >= 1\n  ensures forall x :: x in arr ==> find_largest(arr) >= x\n{\n  if |arr| == 1 then arr[0]\n  else \n      assert arr == [arr[0]] + arr[1..];\n      var sub_largest := find_largest(arr[1..]) ;\n      if arr[0] >= sub_largest then arr[0] else sub_largest\n}"
+    }
+  },
+  {
+    "name": "p_13_9_sum_of_seq",
+    "nat_lang_statement": "Using recursion, compute the sum of all values in an array.",
+    "dafny": {
+      "method_signature": "p_13_9_sum_of_seq(arr: seq<int>) returns (sum: int)",
+      "requires": [],
+      "ensures": [
+        "sum == sum_array(arr)"
+      ],
+      "functional_code": "function sum_array(arr: seq<int>) : int\n  ensures sum_array(arr) == (if |arr| == 0 then 0 else arr[0] + sum_array(arr[1..]))\n{\n  if |arr| == 0 then 0\n  else arr[0] + sum_array(arr[1..])\n}"
+    }
+  },
+  {
+    "name": "p_13_9_sum_of_array",
+    "nat_lang_statement": "Using recursion, compute the sum of all values in an array.",
+    "dafny": {
+      "method_signature": "p_13_9_sum_of_array(arr: array<int>) returns (sum: int)",
+      "requires": [],
+      "ensures": [
+        "sum == sum_array(arr[..])"
+      ],
+      "functional_code": "function sum_array(arr: seq<int>) : int\n  ensures sum_array(arr) == (if |arr| == 0 then 0 else arr[0] + sum_array(arr[1..]))\n{\n  if |arr| == 0 then 0\n  else arr[0] + sum_array(arr[1..])\n}"
+    }
+  },
+  {
+    "name": "p_13_10_compute_polygon_area",
+    "nat_lang_statement": "Using recursion, compute the area of a polygon. Cut off a triangle and use the fact that a triangle with corners (x1, y1), (x2, y2), (x3, y3) has area |x1(y2 - y3) + x2(y3 - y1) + x3(y1 - y2)| / 2.",
+    "dafny": {
+      "method_signature": "p_13_10_compute_polygon_area(points: seq<(real, real)>) returns (area: real)",
+      "requires": [
+        "|points| >= 3"
+      ],
+      "ensures": [
+        "area == polygon_area(points)"
+      ],
+      "functional_code": "function polygon_area(points: seq<(real, real)>) : real\n  decreases |points|\n  requires |points| >= 3\n  ensures polygon_area(points) >= 0.0\n{\n  if |points| == 3 then \n    var (x1, y1) := points[0];\n    var (x2, y2) := points[1];\n    var (x3, y3) := points[2];\n    var sign : real := x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2);\n    if sign < 0.0 then -sign / 2.0 else sign / 2.0 as real \n  else \n    var (x1, y1) := points[0];\n    var (x2, y2) := points[1];\n    var (x3, y3) := points[2];\n    var sign : real := x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2);\n    var triangle_area := if sign < 0.0 then -sign / 2.0 else sign / 2.0 as real;\n    triangle_area + polygon_area([points[0]] + points[2..])\n}"
+    }
+  },
+  {
+    "name": "p_13_10_compute_polygon_area_array",
+    "nat_lang_statement": "Using recursion, compute the area of a polygon. Cut off a triangle and use the fact that a triangle with corners (x1, y1), (x2, y2), (x3, y3) has area |x1(y2 - y3) + x2(y3 - y1) + x3(y1 - y2)| / 2.",
+    "dafny": {
+      "method_signature": "p_13_10_compute_polygon_area_array(points: array<(real, real)>) returns (area: real)",
+      "requires": [
+        "points.Length >= 3"
+      ],
+      "ensures": [
+        "area == polygon_area(points[..])"
+      ],
+      "functional_code": "function polygon_area(points: seq<(real, real)>) : real\n  decreases |points|\n  requires |points| >= 3\n  ensures polygon_area(points) >= 0.0\n{\n  if |points| == 3 then \n    var (x1, y1) := points[0];\n    var (x2, y2) := points[1];\n    var (x3, y3) := points[2];\n    var sign : real := x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2);\n    if sign < 0.0 then -sign / 2.0 else sign / 2.0 as real \n  else \n    var (x1, y1) := points[0];\n    var (x2, y2) := points[1];\n    var (x3, y3) := points[2];\n    var sign : real := x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2);\n    var triangle_area := if sign < 0.0 then -sign / 2.0 else sign / 2.0 as real;\n    triangle_area + polygon_area([points[0]] + points[2..])\n}"
+    }
+  }
+]

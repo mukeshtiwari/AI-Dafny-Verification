@@ -1,0 +1,66 @@
+[
+  {
+    "name": "p14_1_selection_sort_desc",
+    "nat_lang_statement": "Modify the selection sort algorithm to sort an array of integers in descending order.",
+    "dafny": {
+      "method_signature": "p14_1_selection_sort_desc(arr: array<int>) returns (sorted: array<int>)",
+      "requires": [
+        "arr.Length >= 0"
+      ],
+      "ensures": [
+        "sorted.Length == arr.Length",
+        "forall i, j :: 0 <= i < j < arr.Length ==> sorted[i] >= sorted[j]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p14_4_merge_sort_strings",
+    "nat_lang_statement": "Modify the merge sort algorithm to sort an array of strings in lexicographic order.",
+    "dafny": {
+      "method_signature": "p14_4_merge_sort_strings(arr: array<string>) returns (sorted: array<string>)",
+      "requires": [
+        "arr.Length >= 0"
+      ],
+      "ensures": [
+        "sorted.Length == arr.Length",
+        "forall i, j :: 0 <= i < j < sorted.Length ==> sorted[i] <= sorted[j]",
+        "forall i :: 0 <= i < arr.Length ==> exists j :: 0 <= j < sorted.Length && arr[i] == sorted[j]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "binary_search",
+    "nat_lang_statement": "Write a telephone lookup program that reads names and telephone numbers from a file and handles lookups by name using binary search.",
+    "dafny": {
+      "method_signature": "binary_search(a: array<(string, nat)>, key: string) returns (result: Option<nat>)",
+      "requires": [
+        "forall i, j :: 0 <= i < j < a.Length ==> a[i].0 <= a[j].0 // array is sorted by the first element"
+      ],
+      "ensures": [
+        "result.Some? ==> result.value < a.Length && a[result.value].0 == key",
+        "result.None? ==> forall i :: 0 <= i < a.Length ==> a[i].0 != key"
+      ],
+      "functional_code": "datatype Option<T> = None | Some(value: T)\n\n// Please not that there is nothing in spec that avoid a linear \n// search implementation in the body of this method."
+    }
+  },
+  {
+    "name": "p14_7_bubble_sort",
+    "nat_lang_statement": "Implement the bubble sort algorithm described in Exercise R14.19.",
+    "dafny": {
+      "method_signature": "p14_7_bubble_sort(arr: array<int>) returns (sorted: array<int>)",
+      "requires": [
+        "arr.Length >= 0"
+      ],
+      "ensures": [
+        "Ordered(arr, 0, arr.Length-1)",
+        "Preserved(arr)",
+        "sorted.Length == arr.Length",
+        "forall i, j :: 0 <= i < j < sorted.Length ==> sorted[i] <= sorted[j]",
+        "forall i :: 0 <= i < arr.Length ==> exists j :: 0 <= j < sorted.Length && arr[i] == sorted[j]"
+      ],
+      "functional_code": "ghost predicate Ordered(a: array<int>, start: int, end: int)\n  reads a\n  requires a.Length >= 1\n{\n  forall i: int, j: int :: 0 <= start <= i <= j <= end < a.Length ==> a[i] <= a[j]\n}\n\n// If the array is partitioned at i, check that all the elements in right side partition are bigger than elements in left side partition. Bubbling the larger elements towards the end of array is a bubble sort property.\n\ntwostate predicate Preserved(a: array<int>)\n  reads a\n{\n  multiset(a[..]) == multiset(old(a[..]))\n}"
+    }
+  }
+]

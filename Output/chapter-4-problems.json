@@ -1,0 +1,405 @@
+[
+  {
+    "name": "p4_1_a_sum_even_numbers",
+    "nat_lang_statement": "Write a program with loops that computes the sum of all even numbers between 2 and 100 (inclusive).",
+    "dafny": {
+      "method_signature": "p4_1_a_sum_even_numbers() returns (sum: nat)",
+      "requires": [],
+      "ensures": [
+        "sum == 2550"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_1_b_sum_squares",
+    "nat_lang_statement": "Write a program with loops that computes the sum of all squares between 1 and 100 (inclusive).",
+    "dafny": {
+      "method_signature": "p4_1_b_sum_squares() returns (sum: nat)",
+      "requires": [],
+      "ensures": [
+        "sum == 338350"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_1_c_powers_of_two",
+    "nat_lang_statement": "Write a program with loops that computes all powers of 2 from 2^0 up to 2^20.",
+    "dafny": {
+      "method_signature": "p4_1_c_powers_of_two() returns (powers: seq<nat>)",
+      "requires": [],
+      "ensures": [
+        "|powers| == 21",
+        "forall i :: 0 <= i < |powers| ==> powers[i] == pow(2 as nat, i)"
+      ],
+      "functional_code": "function pow(base: int, exp: nat): int\n{\n  if exp == 0 then 1 else base * pow(base, exp - 1)\n}\n\n//Dafny does not have pow function"
+    }
+  },
+  {
+    "name": "p4_1_c_powers_of_two_array",
+    "nat_lang_statement": "Write a program with loops that computes all powers of 2 from 2^0 up to 2^20.",
+    "dafny": {
+      "method_signature": "p4_1_c_powers_of_two_array() returns (powers: array<nat>)",
+      "requires": [],
+      "ensures": [
+        "powers.Length == 21",
+        "forall i :: 0 <= i < powers.Length ==> powers[i] == pow(2 as nat, i)"
+      ],
+      "functional_code": "function pow(base: int, exp: nat): int\n{\n  if exp == 0 then 1 else base * pow(base, exp - 1)\n}\n\n//Dafny does not have pow function"
+    }
+  },
+  {
+    "name": "p4_1_d_sum_odd_numbers",
+    "nat_lang_statement": "Write a program with loops that computes the sum of all odd numbers between a and b (inclusive), where a and b are inputs.",
+    "dafny": {
+      "method_signature": "p4_1_d_sum_odd_numbers(a: int, b: int) returns (sum: int)",
+      "requires": [],
+      "ensures": [
+        "sum == sum_odd(a, b)  // closed formula for addition of odd numbers between a and b??"
+      ],
+      "functional_code": "function sum_odd(a: int, b: int): int\ndecreases b - a\n{\n  if a > b then 0\n  else if a % 2 == 1 then a + sum_odd(a + 1, b)\n  else sum_odd(a + 1, b)\n}"
+    }
+  },
+  {
+    "name": "p4_1_e_sum_odd_digits",
+    "nat_lang_statement": "Write a program with loops that computes the sum of all odd digits of a non-negative integer input. For example, if the input is 32677, the sum would be 3 + 7 + 7 = 17.",
+    "dafny": {
+      "method_signature": "p4_1_e_sum_odd_digits(n: nat) returns (sum: nat)",
+      "requires": [],
+      "ensures": [
+        "sum >= 0",
+        "sum == sum_odd_digits(n)"
+      ],
+      "functional_code": "function sum_odd_digits(n: nat): nat\ndecreases n\n{\n  if n % 10 < 10 then \n    if n % 10 % 2 == 1 then n % 10 else 0\n  else if n % 10 % 2 == 1 then n % 10 + sum_odd_digits(n / 10)\n  else sum_odd_digits(n / 10)\n}"
+    }
+  },
+  {
+    "name": "p4_2_a_min_max",
+    "nat_lang_statement": "Write a program that reads a sequence of integer inputs and prints the smallest and largest of the inputs.",
+    "dafny": {
+      "method_signature": "p4_2_a_min_max(inputs: seq<int>) returns (min: int, max: int)",
+      "requires": [
+        "0 < |inputs|"
+      ],
+      "ensures": [
+        "forall x :: x in inputs ==> min <= x",
+        "forall x :: x in inputs ==> max >= x",
+        "exists x :: x in inputs && min == x",
+        "exists x :: x in inputs && max == x"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_2_a_min_max_array",
+    "nat_lang_statement": "Write a program that reads a sequence of integer inputs and prints the smallest and largest of the inputs.",
+    "dafny": {
+      "method_signature": "p4_2_a_min_max_array(inputs: array<int>) returns (min: int, max: int)",
+      "requires": [
+        "0 < inputs.Length"
+      ],
+      "ensures": [
+        "forall i :: 0 <= i < inputs.Length ==> min <= inputs[i]",
+        "forall i :: 0 <= i < inputs.Length ==> max >= inputs[i]",
+        "exists i :: 0 <= i < inputs.Length && min == inputs[i]",
+        "exists i :: 0 <= i < inputs.Length && max == inputs[i]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_2_b_count_even_odd",
+    "nat_lang_statement": "Write a program that reads a sequence of integer inputs and prints the number of even and odd inputs.",
+    "dafny": {
+      "method_signature": "p4_2_b_count_even_odd(inputs: seq<int>) returns (even_count: nat, odd_count: nat)",
+      "requires": [],
+      "ensures": [
+        "even_count + odd_count == |inputs|",
+        "forall x :: x in inputs && x % 2 == 0 ==> even_count >= 1",
+        "forall x :: x in inputs && x % 2 == 1 ==> odd_count >= 1",
+        "(forall x :: x in inputs ==> x % 2 == 0) ==> odd_count == 0 // all inputs are even",
+        "(forall x :: x in inputs ==> x % 2 == 1) ==> even_count == 0 // all inputs are odd"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_2_b_count_even_odd_array",
+    "nat_lang_statement": "Write a program that reads a sequence of integer inputs and prints the number of even and odd inputs.",
+    "dafny": {
+      "method_signature": "p4_2_b_count_even_odd_array(inputs: array<int>) returns (even_count: nat, odd_count: nat)",
+      "requires": [],
+      "ensures": [
+        "even_count + odd_count == inputs.Length",
+        "forall i :: 0 <= i < inputs.Length && inputs[i] % 2 == 0 ==> even_count >= 1",
+        "forall i :: 0 <= i < inputs.Length && inputs[i] % 2 == 1 ==> odd_count >= 1",
+        "(forall i :: 0 <= i < inputs.Length ==> inputs[i] % 2 == 0) ==> odd_count == 0 // all inputs are even",
+        "(forall i :: 0 <= i < inputs.Length ==> inputs[i] % 2 == 1) ==> even_count == 0 // all inputs are odd"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_2_c_cumulative_totals",
+    "nat_lang_statement": "Write a program that reads a sequence of integer inputs and prints cumulative totals. For example, if the input is 1 7 2 9, the program should print 1 8 10 19.",
+    "dafny": {
+      "method_signature": "p4_2_c_cumulative_totals(inputs: seq<int>) returns (totals: seq<int>)",
+      "requires": [
+        "0 < |inputs|"
+      ],
+      "ensures": [
+        "|totals| == |inputs|",
+        "forall i :: 0 <= i < |inputs| ==> totals[i] == (if i == 0 then inputs[0] else totals[i - 1] + inputs[i])"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_2_c_cumulative_totals_array",
+    "nat_lang_statement": "Write a program that reads a sequence of integer inputs and prints cumulative totals. For example, if the input is 1 7 2 9, the program should print 1 8 10 19.",
+    "dafny": {
+      "method_signature": "p4_2_c_cumulative_totals_array(inputs: array<int>) returns (totals: array<int>)",
+      "requires": [
+        "0 < inputs.Length"
+      ],
+      "ensures": [
+        "totals.Length == inputs.Length",
+        "forall i :: 0 <= i < inputs.Length ==> totals[i] == (if i == 0 then inputs[0] else totals[i - 1] + inputs[i])"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_2_d_adjacent_duplicates",
+    "nat_lang_statement": "Write a program that reads a sequence of integer inputs and prints all adjacent duplicates. For example, if the input is 1 3 3 4 5 5 6 6 6 2, the program should print 3 5 6.",
+    "dafny": {
+      "method_signature": "p4_2_d_adjacent_duplicates(inputs: seq<int>) returns (duplicates: seq<int>)",
+      "requires": [],
+      "ensures": [
+        "forall d :: d in duplicates ==> d in inputs",
+        "forall i :: 0 <= i < |inputs| - 1 && inputs[i] == inputs[i + 1] ==> inputs[i] in duplicates",
+        "forall d :: d in duplicates ==> exists i :: 0 <= i < |inputs| - 1 && inputs[i] == inputs[i + 1] && inputs[i] == d",
+        "forall d :: d in duplicates ==> exists i, j :: 0 <= i < j < |inputs| && contiguous_duplicates(inputs, i, j, d) == true"
+      ],
+      "functional_code": "function contiguous_duplicates(inputs: seq<int>, i : nat, j : nat, d : int) : (b : bool) \n  requires 0 <= i < j < |inputs|\n  decreases j - i\n{\n  if i + 1 == j then inputs[i] == inputs[j] == d\n  else if inputs[i] == d then contiguous_duplicates(inputs, i + 1, j, d)\n  else false\n}"
+    }
+  },
+  {
+    "name": "p4_2_d_adjacent_duplicates_array",
+    "nat_lang_statement": "Write a program that reads a sequence of integer inputs and prints all adjacent duplicates. For example, if the input is 1 3 3 4 5 5 6 6 6 2, the program should print 3 5 6.",
+    "dafny": {
+      "method_signature": "p4_2_d_adjacent_duplicates_array(inputs: array<int>) returns (duplicates: array<int>)",
+      "requires": [],
+      "ensures": [
+        "forall d :: d in duplicates[..] ==> d in inputs[..]",
+        "forall i :: 0 <= i < inputs.Length - 1 && inputs[i] == inputs[i + 1] ==> inputs[i] in duplicates[..]",
+        "forall d :: d in duplicates[..] ==> exists i :: 0 <= i < inputs.Length - 1 && inputs[i] == inputs[i + 1] && inputs[i] == d",
+        "forall d :: d in duplicates[..] ==> exists i, j :: 0 <= i < j < inputs.Length && contiguous_duplicates_array(inputs, i, j, d) == true"
+      ],
+      "functional_code": "function contiguous_duplicates_array(inputs: array<int>, i : nat, j : nat, d : int) : (b : bool) \n  requires 0 <= i < j < inputs.Length\n  decreases j - i\n{\n  if i + 1 == j then inputs[i] == inputs[j] == d\n  else if inputs[i] == d then contiguous_duplicates_array(inputs, i + 1, j, d)\n  else false\n}"
+    }
+  },
+  {
+    "name": "p4_3_a_extract_uppercase",
+    "nat_lang_statement": "Write a program that reads a line of input as a string and prints only the uppercase letters in the string.",
+    "dafny": {
+      "method_signature": "p4_3_a_extract_uppercase(s: string) returns (uppercase: string)",
+      "requires": [],
+      "ensures": [
+        "forall c :: c in uppercase ==> 'A' <= c <= 'Z'",
+        "forall c :: c in s && 'A' <= c <= 'Z' ==> c in uppercase"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_3_b_every_second_letter",
+    "nat_lang_statement": "Write a program that reads a line of input as a string and prints every second letter of the string.",
+    "dafny": {
+      "method_signature": "p4_3_b_every_second_letter(s: string) returns (result: string)",
+      "requires": [],
+      "ensures": [
+        "|result| * 2 == |s| || |result| * 2 + 1 == |s|",
+        "forall i :: 0 <= i < |result| ==> result[i] == s[2 * i]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_3_c_replace_vowels",
+    "nat_lang_statement": "Write a program that reads a line of input as a string and prints the string with all vowels replaced by an underscore.",
+    "dafny": {
+      "method_signature": "p4_3_c_replace_vowels(s: string) returns (result: string)",
+      "requires": [],
+      "ensures": [
+        "|result| == |s|",
+        "forall i :: 0 <= i < |s| ==> (if s[i] in ['a','e','i','o','u','A','E','I','O','U'] then result[i] == '_' else result[i] == s[i])"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_3_d_count_vowels",
+    "nat_lang_statement": "Write a program that reads a line of input as a string and prints the number of vowels in the string.",
+    "dafny": {
+      "method_signature": "p4_3_d_count_vowels(s: string) returns (count: nat)",
+      "requires": [],
+      "ensures": [
+        "count >= 0",
+        "forall c :: c in s && c in ['a','e','i','o','u','A','E','I','O','U'] ==> count >= 1",
+        "(forall c :: c in s ==> c !in ['a','e','i','o','u','A','E','I','O','U']) ==> count == 0"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_3_e_positions_of_vowels",
+    "nat_lang_statement": "Write a program that reads a line of input as a string and prints the positions of all vowels in the string.",
+    "dafny": {
+      "method_signature": "p4_3_e_positions_of_vowels(s: string) returns (positions: seq<nat>)",
+      "requires": [],
+      "ensures": [
+        "forall p :: p in positions ==> 0 <= p < |s| && s[p] in ['a','e','i','o','u','A','E','I','O','U']",
+        "forall i :: 0 <= i < |s| && s[i] in ['a','e','i','o','u','A','E','I','O','U'] ==> i in positions"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_3_e_positions_of_vowels_array",
+    "nat_lang_statement": "Write a program that reads a line of input as a string and prints the positions of all vowels in the string.",
+    "dafny": {
+      "method_signature": "p4_3_e_positions_of_vowels_array(s: string) returns (positions: array<nat>)",
+      "requires": [],
+      "ensures": [
+        "forall p :: p in positions[..] ==> 0 <= p < |s| && s[p] in ['a','e','i','o','u','A','E','I','O','U']",
+        "forall i :: 0 <= i < |s| && s[i] in ['a','e','i','o','u','A','E','I','O','U'] ==> i in positions[..]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_5_analyze_floats",
+    "nat_lang_statement": "Write a program that reads a set of floating-point values, asks the user to enter the values, then prints the average of the values, the smallest of the values, the largest of the values, and the range, that is the difference between the smallest and largest.",
+    "dafny": {
+      "method_signature": "p4_5_analyze_floats(values: seq<real>) returns (average: real, min: real, max: real, range: real)",
+      "requires": [
+        "0 < |values|"
+      ],
+      "ensures": [
+        "average == (sum(values) / |values| as real)",
+        "forall v :: v in values ==> min <= v",
+        "forall v :: v in values ==> max >= v",
+        "range == max - min",
+        "exists v :: v in values && min == v",
+        "exists v :: v in values && max == v"
+      ],
+      "functional_code": "function sum(values: seq<real>): real\n{\n  if |values| == 0 then 0.0\n  else values[0] + sum(values[1..])\n}"
+    }
+  },
+  {
+    "name": "p4_5_analyze_floats_array",
+    "nat_lang_statement": "Write a program that reads a set of floating-point values, asks the user to enter the values, then prints the average of the values, the smallest of the values, the largest of the values, and the range, that is the difference between the smallest and largest.",
+    "dafny": {
+      "method_signature": "p4_5_analyze_floats_array(values: array<real>) returns (average: real, min: real, max: real, range: real)",
+      "requires": [
+        "0 < values.Length"
+      ],
+      "ensures": [
+        "average == (sum_array(values, 0) / values.Length as real)",
+        "forall v :: v in values[..] ==> min <= v",
+        "forall v :: v in values[..] ==> max >= v",
+        "range == max - min",
+        "exists v :: v in values[..] && min == v",
+        "exists v :: v in values[..] && max == v"
+      ],
+      "functional_code": "function sum_array(values: array<real>, i: nat): real\n  requires i <= values.Length\n  decreases values.Length - i\n{\n  if i == values.Length then 0.0\n  else values[i] + sum_array(values, i + 1)\n}"
+    }
+  },
+  {
+    "name": "p4_6_find_minimum",
+    "nat_lang_statement": "Translate the pseudocode for finding the minimum value from a set of inputs into a Java program: set a Boolean variable first to true; while another value has been read successfully, if first is true, set the minimum to the value and set first to false; else if the value is less than the minimum, set the minimum to the value; print the minimum.",
+    "dafny": {
+      "method_signature": "p4_6_find_minimum(inputs: seq<int>) returns (min: int)",
+      "requires": [
+        "0 < |inputs|"
+      ],
+      "ensures": [
+        "forall x :: x in inputs ==> min <= x",
+        "exists x :: x in inputs && min == x"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_6_find_minimum_array",
+    "nat_lang_statement": "Translate the pseudocode for finding the minimum value from a set of inputs into a Java program: set a Boolean variable first to true; while another value has been read successfully, if first is true, set the minimum to the value and set first to false; else if the value is less than the minimum, set the minimum to the value; print the minimum.",
+    "dafny": {
+      "method_signature": "p4_6_find_minimum_array(inputs: array<int>) returns (min: int)",
+      "requires": [
+        "0 < inputs.Length"
+      ],
+      "ensures": [
+        "forall x :: x in inputs[..] ==> min <= x",
+        "exists x :: x in inputs[..] && min == x"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_7_permute_string",
+    "nat_lang_statement": "Translate the pseudocode for randomly permuting the characters in a string into a Java program: read a word; repeat word.length() times; pick a random position i in the word, but not the last position; pick a random position j > i in the word; swap the letters at positions j and i; print the word.",
+    "dafny": {
+      "method_signature": "p4_7_permute_string(s: string) returns (permuted: string)",
+      "requires": [],
+      "ensures": [
+        "|permuted| == |s|",
+        "forall c :: c in s ==> c in permuted",
+        "forall c :: c in permuted ==> c in s"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_8_print_characters",
+    "nat_lang_statement": "Write a program that reads a word and prints each character of the word on a separate line.",
+    "dafny": {
+      "method_signature": "p4_8_print_characters(s: string) returns (chars: string)",
+      "requires": [],
+      "ensures": [
+        "|chars| == 2 * |s|",
+        "forall i :: 0 <= i < |s| ==> i % 2 == 1 ==> chars[i] == '\\n'",
+        "forall i :: 0 <= i < |s| ==> i % 2 == 0 ==> chars[i] == s[i / 2]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_9_reverse_string",
+    "nat_lang_statement": "Write a program that reads a word and prints the word in reverse.",
+    "dafny": {
+      "method_signature": "p4_9_reverse_string(s: string) returns (reversed: string)",
+      "requires": [],
+      "ensures": [
+        "|reversed| == |s|",
+        "forall i :: 0 <= i < |s| ==> reversed[i] == s[|s| - 1 - i]"
+      ],
+      "functional_code": null
+    }
+  },
+  {
+    "name": "p4_10_count_vowels",
+    "nat_lang_statement": "Write a program that reads a word and prints the number of vowels in the word.",
+    "dafny": {
+      "method_signature": "p4_10_count_vowels(s: string) returns (count: nat)",
+      "requires": [],
+      "ensures": [
+        "0 <= count",
+        "forall c :: c in s ==> c in ['a','e','i','o','u','A','E','I','O','U'] ==> count >= 1",
+        "(forall c :: c in s ==> c !in ['a','e','i','o','u','A','E','I','O','U']) ==> count == 0"
+      ],
+      "functional_code": null
+    }
+  }
+]

@@ -1,0 +1,35 @@
+Chapter 2:
+	I excluded the following methods because their ensures clauses appear corrupted/incomplete in the source file, so I could not safely preserve them without guessing:
+
+	max (x: int, y: int ) returns (result:int)
+	min (x: int, y: int ) returns (result:int)
+
+	Specifically, each contains a broken-looking clause of the form:
+	ensures result == x \
+
+	 result == y
+	or the equivalent for min, so I left them out as requested rather than altering or inventing Dafny content.
+
+Chapter 4: 
+	p4.4 — it appears only as a natural-language/comment prompt in the Dafny file and has no corresponding Dafny method, so I excluded it rather than guessing or inventing a method.
+
+
+Chapter 5:
+	I excluded:
+
+	p5_10_readDouble(prompt: seq<char>) returns (value: real) — it has no requires or ensures clauses/specification to preserve, so I treated it as incomplete/unusable for the JSON problem format rather than guessing. 
+
+	I also preserved the multiline ensures clause in p5_8_scramble_array as a single JSON string, including its continuation line, so the Dafny contract was not altered.
+
+Chapter 13:
+	Excluded item:
+
+	P13.4 — it is marked as Todo and has no corresponding Dafny method, so I excluded it rather than guessing or inventing content.
+
+
+Chapter 14:
+	Excluded incomplete/comment-only items:
+
+		P14.2 — marked Todo, no Dafny method present
+		P14.3 — marked Todo, no Dafny method present
+		P14.6 — marked Todo, no Dafny method present

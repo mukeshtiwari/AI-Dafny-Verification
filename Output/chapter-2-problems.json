@@ -104,7 +104,7 @@
     "name": "p2_4_max",
     "nat_lang_statement": "Write a program that prompts the user for two integers and then prints the maximum of the two.",
     "dafny": {
-      "method_signature": "max (x: int, y: int ) returns (result:nat)",
+      "method_signature": "max (x: int, y: int ) returns (result:int)",
       "requires": [],
       "ensures": [
         "result == x || result == y",
@@ -117,7 +117,7 @@
     "name": "p2_4_min",
     "nat_lang_statement": "Write a program that prompts the user for two integers and then prints the minimum of the two.",
     "dafny": {
-      "method_signature": "min (x: int, y: int ) returns (result:nat)",
+      "method_signature": "min (x: int, y: int ) returns (result:int)",
       "requires": [],
       "ensures": [
         "result == x || result == y",
